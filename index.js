@@ -6,8 +6,10 @@ var app = express();
 app.use(bodyParser.json());
 //app.set("views") set templating here is necessary
 
-app.use(router);
-
+// app.use(router);
+app.get('/', function(req, res){
+  res.json({res: "hi"})
+})
 app.listen(3000, function(){
   console.log("App listening on port 3000.")
 })
