@@ -1,0 +1,15 @@
+{
+  "name": "wmata_scraper",
+  "version": "1.0.0",
+  "description": "uses wmata api to render some stuff",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ts",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.3",
+    "request": "^2.67.0"
+  }
+}
