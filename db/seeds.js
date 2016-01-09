@@ -36,12 +36,12 @@ Line.remove({}, function(err){
     wMetro.save().then(function(metro, err){
       for (var i=0; i<metro.lines.length; i++){
         new Line({name: metro.lines[i], createdAt: Date()}).getStations(metro).then(function(line){
-          line.save().then(function(line){
-            console.log("Line Saved")
-            line.update().then(function(theLine){
-              theLine.save().then(function(thisLine){
-                console.log("Trains Saved for "+thisLine.name+" line.")
-                console.log("Num trains: "+thisLine.trains.length)
+          line.update().then(function(theLine){
+            theLine.save().then(function(thisLine){
+              console.log("Trains Saved for "+thisLine.name+" line.");
+              console.log("Num trains: "+thisLine.trains.length);
+              thisLine.stations[5].getTrains().then(function(station){
+                console.log(station);
               })
             })
           })

@@ -25,6 +25,18 @@ var TrainSchema = new Schema({
   line: String
 });
 
+// function to get the position of a train on a line
+TrainSchema.methods.getPos = function() {
+  console.log("woop")
+
+};
+
+// use this to get direction of a train based on its position
+// and destination
+TrainSchema.methods.getDirection = function() {
+
+};
+
 var StationSchema = new Schema({
   createdAt: Date,
   name: String,
@@ -32,9 +44,45 @@ var StationSchema = new Schema({
   line: String,
   sequence: Number,
   distPrev: Number,
-  timePrev: Number
+  timePrev: Number,
+  trains: [TrainSchema]
 
 });
+
+// get the inbound trains on one station only
+StationSchema.methods.hey = function(){
+  console.log("hey")
+}
+StationSchema.methods.getTrains = function() {
+  var self = this;
+  var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/"+this.code+"?api_key="+env.apiKey;
+  return new Promise(function(resolve, reject){
+    request(url, function(err, res){
+      if (!err){
+        resJSON = JSON.parse(res.body);
+        if (resJSON.Trains) {
+          for (var i=0;i<resJSON.Trains.length;i++){
+            if (resJSON.Trains[i].DestinationName && resJSON.Trains[i].Min && resJSON.Trains[i].Min.length > 0){
+              var data = {
+                createdAt: Date(),
+                status: resJSON.Trains[i].Min,
+                dest: resJSON.Trains[i].DestinationName,
+                destCode: resJSON.Trains[i].DestinationCode,
+                location: resJSON.Trains[i].LocationName,
+                locationCode: resJSON.Trains[i].LocationCode,
+                numCars: resJSON.Trains[i].Car,
+                line: resJSON.Trains[i].Line
+              }
+              var train = new Train(data);
+              self.trains.push(train);
+            }
+          }
+        }
+        resolve(s elf);
+      }
+    })
+  })
+}
 
 var LineSchema = new Schema({
   name: String,
@@ -72,6 +120,7 @@ LineSchema.methods.getStations = function(metro) {
           }
           var station = new Station(data);
           self.stations.push(station);
+          // console.log(station)
         }
         self.totalDist = distanceCounter;
         resolve(self);
@@ -91,6 +140,7 @@ LineSchema.methods.build = function() {
 // call this to get an update on a line
 LineSchema.methods.update = function() {
   var self = this;
+  this.trains = []; // unsure if this works...
   var queryStr = "";
   for (var i=0; i<this.stations.length; i++){
     queryStr+=this.stations[i].code;
@@ -101,20 +151,22 @@ LineSchema.methods.update = function() {
     request(url, function(err, res){
       if (!err){
         resJSON = JSON.parse(res.body);
-        for (var i=0;i<resJSON.Trains.length;i++){
-          if (resJSON.Trains[i].DestinationName && resJSON.Trains[i].Min && resJSON.Trains[i].Min.length > 0){
-            var data = {
-              createdAt: Date(),
-              status: resJSON.Trains[i].Min,
-              dest: resJSON.Trains[i].DestinationName,
-              destCode: resJSON.Trains[i].DestinationCode,
-              location: resJSON.Trains[i].LocationName,
-              locationCode: resJSON.Trains[i].LocationCode,
-              numCars: resJSON.Trains[i].Car,
-              line: resJSON.Trains[i].Line
+        if (resJSON.Trains) {
+          for (var i=0;i<resJSON.Trains.length;i++){
+            if (resJSON.Trains[i].DestinationName && resJSON.Trains[i].Min && resJSON.Trains[i].Min.length > 0){
+              var data = {
+                createdAt: Date(),
+                status: resJSON.Trains[i].Min,
+                dest: resJSON.Trains[i].DestinationName,
+                destCode: resJSON.Trains[i].DestinationCode,
+                location: resJSON.Trains[i].LocationName,
+                locationCode: resJSON.Trains[i].LocationCode,
+                numCars: resJSON.Trains[i].Car,
+                line: resJSON.Trains[i].Line
+              }
+              var train = new Train(data);
+              self.trains.push(train);
             }
-            var train = new Train(data);
-            self.trains.push(train);
           }
         }
         resolve(self);
@@ -132,20 +184,10 @@ LineSchema.methods.killGhosts = function() {
   }
 };
 
-// function to get the position of a train on a line
-TrainSchema.methods.getPos = function() {
-
-};
-
-// use this to get direction of a train based on its position
-// and destination
-TrainSchema.methods.getDirection = function() {
-
-};
-
 mongoose.model('Line', LineSchema);
 mongoose.model('Train', TrainSchema);
 mongoose.model('Station', StationSchema);
 mongoose.model('Metro', MetroSchema);
-var Station = require('../models/station.js')
-var Train = require('../models/train.js')
+var Station = require('../models/station.js');
+var Train = require('../models/train.js');
+var Line = require('../models/line.js');
