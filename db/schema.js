@@ -22,23 +22,25 @@ var TrainSchema = new Schema({
   location: String,
   locationCode: String,
   numCars: Number,
-  line: String
+  line: String,
+  position: Number //this is the position on a line, use to kill ghosts
 });
 
 // function to get the position of a train on a line
 TrainSchema.methods.getPos = function() {
-  console.log("woop")
+
 
 };
 
 // use this to get direction of a train based on its position
-// and destination
+// and destination.  maybe don't need this
 TrainSchema.methods.getDirection = function() {
 
 };
 
 var StationSchema = new Schema({
   createdAt: Date,
+  averageWait: Object, // average distance between all incoming trains
   name: String,
   code: String,
   line: String,
@@ -50,9 +52,7 @@ var StationSchema = new Schema({
 });
 
 // get the inbound trains on one station only
-StationSchema.methods.hey = function(){
-  console.log("hey")
-}
+// probably delete this
 StationSchema.methods.getTrains = function() {
   var self = this;
   var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/"+this.code+"?api_key="+env.apiKey;
@@ -95,9 +95,6 @@ var LineSchema = new Schema({
 
 });
 
-
-
-// edit to use get path between
 // run in seeds to get stations+some data
 LineSchema.methods.getStations = function(metro) {
   var self = this;
@@ -129,15 +126,23 @@ LineSchema.methods.getStations = function(metro) {
   })
 };
 
-// may use this method to add more information to the line.
-// maybe not though.  possibly get lat/long here using
-// https://developer.wmata.com/docs/services/5476364f031f590f38092507/operations/5476364f031f5909e4fe3311
-LineSchema.methods.build = function() {
+// function to get the average wait time for each station on a
+// line.  need to get a separate avg for each direction, save as
+// object with 2 keys. simply avg of every inbound train in min.
+// don't need api call for this method...do this after getAllTrains
+LineSchema.methods.getAvgWait = function() {
+
+};
+
+// function to get the distance between a station and previous in minutes
+// loops through a station array and adds this information to the station
+// https://developer.wmata.com/docs/services/5476364f031f590f38092507/operations/5476364f031f5909e4fe3313
+LineSchema.methods.getDistances = function() {
 
 };
 
 // update all trains on a line here, maybe also check for delays
-// call this to get an update on a line
+// call this to get an update on a line.  probably delete.
 LineSchema.methods.update = function() {
   var self = this;
   this.trains = []; // unsure if this works...
