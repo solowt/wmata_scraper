@@ -23,7 +23,8 @@ var TrainSchema = new Schema({
   locationCode: String,
   numCars: Number,
   line: String,
-  position: Number //this is the position on a line, use to kill ghosts
+  position: Number, //this is the position on a line, use to kill ghosts
+  direction: String //2 possible directions, inbound and outbound
 });
 
 // function to get the position of a train on a line
@@ -62,23 +63,13 @@ StationSchema.methods.getTrains = function() {
         resJSON = JSON.parse(res.body);
         if (resJSON.Trains) {
           for (var i=0;i<resJSON.Trains.length;i++){
-            if (resJSON.Trains[i].DestinationName && resJSON.Trains[i].Min && resJSON.Trains[i].Min.length > 0){
-              var data = {
-                createdAt: Date(),
-                status: resJSON.Trains[i].Min,
-                dest: resJSON.Trains[i].DestinationName,
-                destCode: resJSON.Trains[i].DestinationCode,
-                location: resJSON.Trains[i].LocationName,
-                locationCode: resJSON.Trains[i].LocationCode,
-                numCars: resJSON.Trains[i].Car,
-                line: resJSON.Trains[i].Line
-              }
-              var train = new Train(data);
+            if (functionLib.validTrain(resJSON.Trains[i])){
+              var train = new Train(functionLib.constructTrainData(resJSON.Trains[i]));
               self.trains.push(train);
             }
           }
         }
-        resolve(s elf);
+        resolve(self);
       }
     })
   })
@@ -94,6 +85,11 @@ var LineSchema = new Schema({
   trains: [TrainSchema]
 
 });
+
+//sort trains maybe don't need
+LineSchema.methods.sortTrains = function() {
+
+}
 
 // run in seeds to get stations+some data
 LineSchema.methods.getStations = function(metro) {
@@ -117,7 +113,6 @@ LineSchema.methods.getStations = function(metro) {
           }
           var station = new Station(data);
           self.stations.push(station);
-          // console.log(station)
         }
         self.totalDist = distanceCounter;
         resolve(self);
@@ -131,6 +126,17 @@ LineSchema.methods.getStations = function(metro) {
 // object with 2 keys. simply avg of every inbound train in min.
 // don't need api call for this method...do this after getAllTrains
 LineSchema.methods.getAvgWait = function() {
+  var c = 0;
+  for (var i=0;i<this.stations.length;i++){
+    var average = 0;
+    for (var j=0;j<this.stations[i].trains.length;j++){
+      c++;
+      if (this.stations[i].trains[j].status != 'BRD' && this.stations[i].trains[j].status != 'ARR'){
+        average+= parseInt(this.stations[i].trains[j].status);
+      }
+    }
+    console.log(this.stations[i].line+ " "+this.stations[i].code+ ": "+average+" "+average/this.stations[i].trains.length)
+  }
 
 };
 
@@ -143,42 +149,32 @@ LineSchema.methods.getDistances = function() {
 
 // update all trains on a line here, maybe also check for delays
 // call this to get an update on a line.  probably delete.
-LineSchema.methods.update = function() {
-  var self = this;
-  this.trains = []; // unsure if this works...
-  var queryStr = "";
-  for (var i=0; i<this.stations.length; i++){
-    queryStr+=this.stations[i].code;
-    queryStr+=",";
-  }
-  var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/"+queryStr+"?api_key="+env.apiKey
-  return new Promise(function(resolve, reject){
-    request(url, function(err, res){
-      if (!err){
-        resJSON = JSON.parse(res.body);
-        if (resJSON.Trains) {
-          for (var i=0;i<resJSON.Trains.length;i++){
-            if (resJSON.Trains[i].DestinationName && resJSON.Trains[i].Min && resJSON.Trains[i].Min.length > 0){
-              var data = {
-                createdAt: Date(),
-                status: resJSON.Trains[i].Min,
-                dest: resJSON.Trains[i].DestinationName,
-                destCode: resJSON.Trains[i].DestinationCode,
-                location: resJSON.Trains[i].LocationName,
-                locationCode: resJSON.Trains[i].LocationCode,
-                numCars: resJSON.Trains[i].Car,
-                line: resJSON.Trains[i].Line
-              }
-              var train = new Train(data);
-              self.trains.push(train);
-            }
-          }
-        }
-        resolve(self);
-      }
-    })
-  })
-};
+// LineSchema.methods.update = function() {
+//   var self = this;
+//   this.trains = []; // unsure if this works...
+//   var queryStr = "";
+//   for (var i=0; i<this.stations.length; i++){
+//     queryStr+=this.stations[i].code;
+//     queryStr+=",";
+//   }
+//   var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/"+queryStr+"?api_key="+env.apiKey
+//   return new Promise(function(resolve, reject){
+//     request(url, function(err, res){
+//       if (!err){
+//         resJSON = JSON.parse(res.body);
+//         if (resJSON.Trains) {
+//           for (var i=0;i<resJSON.Trains.length;i++){
+//             if (functionLib.validTrain(resJSON.Trains[i])){
+//               var train = new Train(functionLib.constructTrainData(resJSON.Trains[i]));
+//               self.trains.push(train);
+//             }
+//           }
+//         }
+//         resolve(self);
+//       }
+//     })
+//   })
+// };
 
 // function to eliminate "ghost trains," ie train duplicates
 // call this after .update is called, also exlcude trains not
@@ -196,3 +192,4 @@ mongoose.model('Metro', MetroSchema);
 var Station = require('../models/station.js');
 var Train = require('../models/train.js');
 var Line = require('../models/line.js');
+var functionLib = require('../function_lib/functions.js')

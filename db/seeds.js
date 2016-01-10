@@ -3,6 +3,7 @@ var Line = require('../models/line.js');
 var Station = require('../models/station.js');
 var Train = require('../models/train.js');
 var Metro = require('../models/metro.js');
+var functionLib = require('../function_lib/functions.js');
 
 var conn = mongoose.connect('mongodb://localhost/wmata-scraper')
 
@@ -33,20 +34,43 @@ Line.remove({}, function(err){
                     lastStations: lastStations
                     };
     var wMetro = new Metro(metroData);
+
     wMetro.save().then(function(metro, err){
+      var lineObj = {};
       for (var i=0; i<metro.lines.length; i++){
         new Line({name: metro.lines[i], createdAt: Date()}).getStations(metro).then(function(line){
-          line.update().then(function(theLine){
-            theLine.save().then(function(thisLine){
-              console.log("Trains Saved for "+thisLine.name+" line.");
-              console.log("Num trains: "+thisLine.trains.length);
-              thisLine.stations[5].getTrains().then(function(station){
-                console.log(station);
-              })
-            })
-          })
+          var code = line.name;
+          lineObj[code] = line;
+          console.log(Object.keys(lineObj).length)
+          return new Promise(function(resolve, reject){
+            if (Object.keys(lineObj).length == 6){
+              resolve(lineObj);
+            }
+          });
+        }).then(functionLib.getAllTrains).then(function(lineObjA){
+          for (var key in lineObjA){
+            lineObjA[key].getAvgWait();
+          }
         })
       }
+        // new Line({name: metro.lines[i], createdAt: Date()}).getStations(metro).then(functionLib.makeLineObj).then(functionLib.getAllTrains).then(function(doneLineObj){
+        //   for (key in doneLineObj){
+        //     doneLineObj[key].save().then(function(line, err){
+        //       console.log(line.name+" line saved!");
+        //     });
+        //   }
+        // });
+          // line.update().then(function(theLine){
+          //   theLine.save().then(function(thisLine){
+          //     console.log("Trains Saved for "+thisLine.name+" line.");
+          //     console.log("Num trains: "+thisLine.trains.length);
+          //     thisLine.stations[5].getTrains().then(function(station){
+          //       console.log(station);
+          //     })
+          //   })
+          // })
+
+      // }
     })
   })
 });
