@@ -83,8 +83,10 @@ var constructTrainData = function(data){
     location: data.LocationName,
     locationCode: data.LocationCode,
     numCars: data.Car,
-    line: data.Line
+    line: data.Line,
+    direction: data.Group
   }
+  // console.log(data.Group)
   return trainData;
 }
 

@@ -126,17 +126,31 @@ LineSchema.methods.getStations = function(metro) {
 // object with 2 keys. simply avg of every inbound train in min.
 // don't need api call for this method...do this after getAllTrains
 LineSchema.methods.getAvgWait = function() {
-  var c = 0;
   for (var i=0;i<this.stations.length;i++){
-    var average = 0;
+    var averageIn = 0;
+    var averageOut = 0;
+    var numIn = 0;
+    var numOut = 0;
     for (var j=0;j<this.stations[i].trains.length;j++){
-      c++;
-      if (this.stations[i].trains[j].status != 'BRD' && this.stations[i].trains[j].status != 'ARR'){
-        average+= parseInt(this.stations[i].trains[j].status);
+      console.log(this.stations[i].trains[j].direction)
+      if (this.stations[i].trains[j].direction == "1"){
+        numIn++;
+      }else if (this.stations[i].trains[j].direction == "2"){
+        numOut++;
+      }
+      if (this.stations[i].trains[j].direction == "1" && this.stations[i].trains[j].status != 'BRD' && this.stations[i].trains[j].status != 'ARR'){
+        averageIn+= parseInt(this.stations[i].trains[j].status);
+      } else if(this.stations[i].trains[j].direction == "2" && this.stations[i].trains[j].status != 'BRD' && this.stations[i].trains[j].status != 'ARR'){
+        averageOut+= parseInt(this.stations[i].trains[j].status);
       }
     }
-    console.log(this.stations[i].line+ " "+this.stations[i].code+ ": "+average+" "+average/this.stations[i].trains.length)
-  }
+    console.log(numIn+" "+numOut)
+    var waitObj = {
+                    in: averageIn/numIn,
+                    out: averageOut/numOut
+                  };
+    console.log(waitObj)
+    }
 
 };
 
