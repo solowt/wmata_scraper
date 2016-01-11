@@ -1,3 +1,4 @@
+var mongoose = require('mongoose');
 var request = require('request');
 var Station = require('../models/station.js');
 var Train = require('../models/train.js');
@@ -6,6 +7,7 @@ var env = require('../env.js');
 
 // take all lines as an array, update every station's (nested on line)
 // trains array.  do an api call for All trains. lineObj = {code=>Line}
+// this has a bug, not currently in use.
 var getAllTrains = function(lineObj) {
   lineObj = clearTrains(lineObj);
   var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/All?api_key="+env.apiKey;
@@ -18,21 +20,54 @@ var getAllTrains = function(lineObj) {
             var locationCode = resJSON.Trains[i].LocationCode;
             var lineCode = resJSON.Trains[i].Line;
             var newTrain = new Train(constructTrainData(resJSON.Trains[i]));
-            lineObj[lineCode].stations.find(findStations.bind({loc:locationCode})).trains.push(newTrain);
+            for (var j=0; j<lineObj[lineCode].stations.length; j++){
+              if (lineObj[lineCode].stations[j].code == locationCode){
+                if (newTrain.direction == "2"){
+                  lineObj[lineCode].stations[j].trainsOut.push(newTrain);
+                } else if (newTrain.direction == "1"){
+                  lineObj[lineCode].stations[j].trainsIn.push(newTrain);
+                } else{
+                  console.log("else")
+                }
+              }
+            }
           }
         }
-      resolve(lineObj);
+        getTrainNumWrapper(lineObj);
+        resolve(lineObj);
       }
     });
   });
 }
 
+var getTrainsWrapper = function (linesObj){
+  var counter = 0;
+  var numKeys = Object.keys(linesObj).length;
+  return new Promise(function(resolve, reject){
+    for (var key in linesObj){
+      linesObj[key].getTrains().then(function(){
+        // console.log(counter)
+        if (++counter == numKeys){
+          resolve(linesObj);
+        }
+      });
+    }
+  });
+}
+
+var getTrainNumWrapper = function(lineObj) {
+  for (var key in lineObj){
+    lineObj[key].getTrainNum();
+  }
+}
+
 // clear all the trains from the stations on a line object
-// (lineObj = {code=>Line})
+// (lineObj = {code=>Line}) not currently used!
 var clearTrains = function(lineObj) {
   for (var key in lineObj){
     for (var i=0; i<lineObj[key].stations.length; i++){
-      lineObj[key].stations[i].trains = [];
+      lineObj[key].stations[i].trainsIn = [];
+      lineObj[key].stations[i].trainsOut = [];
     }
   }
   return lineObj;
@@ -113,16 +148,12 @@ var getDistances = function(linesObj) {
         var sourceCode = resJSON.StationToStationInfos[i].SourceStation;
         for (var key in linesObj){
           for (var j=1;j<linesObj[key].stations.length; j++){
-            // console.log(linesObj[key].stations[j])
             if (linesObj[key].stations[j].code == targetCode && linesObj[key].stations[j-1].code == sourceCode){
               linesObj[key].stations[j].timePrev = resJSON.StationToStationInfos[i].RailTime;
               console.log(linesObj[key].stations[j-1].name+" to "+linesObj[key].stations[j].name+": "+resJSON.StationToStationInfos[i].RailTime);
-              // break;
             } else if (j<linesObj[key].stations.length-1 && linesObj[key].stations[j].code == sourceCode && linesObj[key].stations[j+1].code == targetCode){
               linesObj[key].stations[j].timeNext = resJSON.StationToStationInfos[i].RailTime;
               console.log(linesObj[key].stations[j].name+" to "+linesObj[key].stations[j+1].name+": "+resJSON.StationToStationInfos[i].RailTime);
-              // break;
-
             }
           }
         }
@@ -151,5 +182,7 @@ module.exports = {
   clearTrains: clearTrains,
   getDistances: getDistances,
   killGhostsWrapper: killGhostsWrapper,
-  getNumber: getNumber
-}
+  getNumber: getNumber,
+  findStations: findStations,
+  getTrainsWrapper: getTrainsWrapper
+};

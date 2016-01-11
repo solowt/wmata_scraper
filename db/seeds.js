@@ -50,11 +50,9 @@ Line.remove({}, function(err){
           });
         }).then(function(linesObj){
           functionLib.getDistances(linesObj).then(function(lo){
-            // functionLib.getAllTrains(lo).then(function(loi){
-            //   console.log(loi);
-            // })
-            console.log("a")
-            console.log(util.inspect(JSON.parse(JSON.stringify(lo)), false, null));
+            functionLib.getAllTrains(lo).then(function(loi){
+              console.log(loi);
+            })
           })
         })
       }

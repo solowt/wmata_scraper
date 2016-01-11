@@ -12,6 +12,7 @@ var MetroSchema = new Schema({
   firstStations: Object,
   lastStations: Object
 });
+mongoose.model('Metro', MetroSchema);
 
 var TrainSchema = new Schema({
   createdAt: Date,
@@ -37,6 +38,7 @@ TrainSchema.methods.getPos = function() {
 TrainSchema.methods.getDirection = function() {
 
 };
+mongoose.model('Train', TrainSchema);
 
 var StationSchema = new Schema({
   averageWait: Object, // average distance between all incoming trains
@@ -47,8 +49,8 @@ var StationSchema = new Schema({
   distPrev: Number,
   timePrev: Number,
   timeNext: Number,
-  trains: [TrainSchema]
-
+  trainsIn: [TrainSchema],
+  trainsOut: [TrainSchema]
 });
 
 // get the inbound trains on one station only
@@ -64,7 +66,12 @@ StationSchema.methods.getTrains = function() {
           for (var i=0;i<resJSON.Trains.length;i++){
             if (functionLib.validTrain(resJSON.Trains[i])){
               var train = new Train(functionLib.constructTrainData(resJSON.Trains[i]));
-              self.trains.push(train);
+              console.log(train.direction)
+              if (train.direction = "2"){
+                self.trainsOut.push(train);
+              } else if (train.direction = "1"){
+                self.trainsOut.push(train);
+              }
             }
           }
         }
@@ -73,20 +80,29 @@ StationSchema.methods.getTrains = function() {
     })
   })
 }
+mongoose.model('Station', StationSchema);
 
 var LineSchema = new Schema({
   name: String,
+  numTrains: Number,
   stations: [StationSchema],
   totalTime: Number,
   totalDist: Number,
   numStations: Number,
-  trains: [TrainSchema]
+  trainsIn: [TrainSchema],
+  trainsOut: [TrainSchema]
 
 });
 
-//sort trains maybe don't need
-LineSchema.methods.sortTrains = function() {
-
+// gets total number of trains on a line
+LineSchema.methods.getTrainNum = function() {
+  var trains = 0;
+  for (var i=0; i<this.stations.length; i++){
+    trains+=this.stations[i].trainsIn.length;
+    trains+=this.stations[i].trainsOut.length;
+  }
+  console.log(this.name+": "+trains)
+  this.numTrains = trains;
 }
 
 // run in seeds to get stations+some data
@@ -165,11 +181,50 @@ LineSchema.methods.killGhosts = function() {
   }
 };
 
+LineSchema.methods.clearTrains = function() {
+  for (var i=0; i<this.stations.length; i++){
+    this.stations[i].trainsIn = [];
+    this.stations[i].trainsOut = [];
+  }
+}
+
+LineSchema.methods.getTrains = function(){
+  this.clearTrains();
+  var self = this;
+  var queryStr = '';
+  for (var i=0; i<this.stations.length; i++){
+    queryStr += this.stations[i].code;
+    queryStr +=',';
+  }
+  var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/"+queryStr+"?api_key="+env.apiKey;
+  console.log(this.name+": "+queryStr)
+  return new Promise(function(resolve, reject){
+    request(url, function(err, res){
+      resJSON = JSON.parse(res.body);
+      if (resJSON.Trains){
+        for (var i=0;i < resJSON.Trains.length; i++){
+          if (functionLib.validTrain(resJSON.Trains[i])) {
+            var locationCode = resJSON.Trains[i].LocationCode;
+            var lineCode = resJSON.Trains[i].Line;
+            if (lineCode == self.name) {
+              var newTrain = new Train(functionLib.constructTrainData(resJSON.Trains[i]));
+              if (newTrain.direction == "2"){
+                self.stations.find(functionLib.findStations.bind({loc:locationCode})).trainsOut.push(newTrain);
+              } else if (newTrain.direction == "1"){
+                self.stations.find(functionLib.findStations.bind({loc:locationCode})).trainsIn.push(newTrain);
+              }
+            }
+          }
+        }
+        self.getTrainNum();
+        resolve(self);
+      }
+    });
+  });
+}
 mongoose.model('Line', LineSchema);
-mongoose.model('Train', TrainSchema);
-mongoose.model('Station', StationSchema);
-mongoose.model('Metro', MetroSchema);
-var Station = require('../models/station.js');
+
 var Train = require('../models/train.js');
+var Station = require('../models/station.js');
 var Line = require('../models/line.js');
 var functionLib = require('../function_lib/functions.js');
