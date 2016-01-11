@@ -7,7 +7,6 @@ var env = require('../env.js');
 // take all lines as an array, update every station's (nested on line)
 // trains array.  do an api call for All trains. lineObj = {code=>Line}
 var getAllTrains = function(lineObj) {
-  var self = this;
   lineObj = clearTrains(lineObj);
   var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/All?api_key="+env.apiKey;
   return new Promise(function(resolve, reject){
@@ -109,25 +108,48 @@ var getDistances = function(linesObj) {
   return new Promise(function(resolve, reject){
     request("https://api.wmata.com/Rail.svc/json/jSrcStationToDstStationInfo?FromStationCode=&ToStationCode=&api_key="+apiKey, function(err, res){
       var resJSON = JSON.parse(res.body);
-      for (var i=0; i<resJSON.StationToStationInfos; i++){
-        var targetCode = resJSON.StationToStationInfos[i].DesinationCode;
-        for (key in linesObj){
-          var aStation = linesObj[key].stations.find(findStations.bind({loc:targetCode}))
-          if (aStation){
-            if (!aStation.timePrev || aStation.timePrev>resJSON.StationToStationInfos[i].RailTime){
-              aStation.timePrev = resJSON.StationToStationInfos[i].RailTime;
+      for (var i=0; i<resJSON.StationToStationInfos.length; i++){
+        var targetCode = resJSON.StationToStationInfos[i].DestinationStation;
+        var sourceCode = resJSON.StationToStationInfos[i].SourceStation;
+        for (var key in linesObj){
+          for (var j=1;j<linesObj[key].stations.length; j++){
+            // console.log(linesObj[key].stations[j])
+            if (linesObj[key].stations[j].code == targetCode && linesObj[key].stations[j-1].code == sourceCode){
+              linesObj[key].stations[j].timePrev = resJSON.StationToStationInfos[i].RailTime;
+              console.log(linesObj[key].stations[j-1].name+" to "+linesObj[key].stations[j].name+": "+resJSON.StationToStationInfos[i].RailTime);
+              // break;
+            } else if (j<linesObj[key].stations.length-1 && linesObj[key].stations[j].code == sourceCode && linesObj[key].stations[j+1].code == targetCode){
+              linesObj[key].stations[j].timeNext = resJSON.StationToStationInfos[i].RailTime;
+              console.log(linesObj[key].stations[j].name+" to "+linesObj[key].stations[j+1].name+": "+resJSON.StationToStationInfos[i].RailTime);
+              // break;
+
             }
           }
         }
       }
-    })
+      for (var aKey in linesObj){
+        linesObj[aKey].stations[0].timeNext = linesObj[aKey].stations[1].timePrev;
+      }
+      console.log("Got rail estimated time diffs (minutes).")
+      resolve(linesObj)
+    });
   });
 };
+
+var killGhostsWrapper = function(linesObj){
+  for (var key in linesObj){
+    linesObj[key].killGhosts();
+  }
+  return linesObj;
+}
 
 module.exports = {
   getAllTrains: getAllTrains,
   validTrain: validTrain,
   constructTrainData: constructTrainData,
   makeLineObj: makeLineObj,
-  clearTrains: clearTrains
+  clearTrains: clearTrains,
+  getDistances: getDistances,
+  killGhostsWrapper: killGhostsWrapper,
+  getNumber: getNumber
 }

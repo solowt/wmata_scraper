@@ -39,7 +39,6 @@ TrainSchema.methods.getDirection = function() {
 };
 
 var StationSchema = new Schema({
-  createdAt: Date,
   averageWait: Object, // average distance between all incoming trains
   name: String,
   code: String,
@@ -47,6 +46,7 @@ var StationSchema = new Schema({
   sequence: Number,
   distPrev: Number,
   timePrev: Number,
+  timeNext: Number,
   trains: [TrainSchema]
 
 });
@@ -76,7 +76,6 @@ StationSchema.methods.getTrains = function() {
 
 var LineSchema = new Schema({
   name: String,
-  createdAt: Date,
   stations: [StationSchema],
   totalTime: Number,
   totalDist: Number,
@@ -103,7 +102,6 @@ LineSchema.methods.getStations = function(metro) {
         for (var i=0; i<self.numStations; i++) {
           distanceCounter+= resJSON.Path[i].DistanceToPrev;
           var data = {
-            createdAt: Date(),
             line: self.name,
             name: resJSON.Path[i].StationName,
             code: resJSON.Path[i].StationCode,
@@ -154,11 +152,16 @@ LineSchema.methods.getAvgWait = function() {
 };
 
 // function to eliminate "ghost trains," ie train duplicates
-// call this after .update is called, also exlcude trains not
-// on that line
+// add if checking for direction, decide to use timeprev or
+// timenext
 LineSchema.methods.killGhosts = function() {
-  for (var i=0; i<this.trains.length;i++){
-
+  for (var i=0; i<this.stations.length;i++){
+    for (var j=0; j<this.stations[i].trains.length; j++) {
+      var eta = functionLib.getNumber(this.stations[i].trains[j].status)
+      if (eta < this.stations[i].trains[j].timePrev){
+        this.trains.push(this.stations[i].trains[j]);
+      }
+    }
   }
 };
 

@@ -4,13 +4,14 @@ var Station = require('../models/station.js');
 var Train = require('../models/train.js');
 var Metro = require('../models/metro.js');
 var functionLib = require('../function_lib/functions.js');
+var util = require('util');
 
 var conn = mongoose.connect('mongodb://localhost/wmata-scraper')
 
 Line.remove({}, function(err){
   Metro.remove({}, function(err){
-  // console.log("Error: "+err);
-    // console.log("Error: "+err);
+  console.log("Error: "+err);
+    console.log("Error: "+err);
     var lines = ['RD', 'YL', 'GR', 'BL', 'OR', 'SV'];
     var firstStations = {
       RD: {name: 'Glenmont', code: 'B11'},
@@ -35,24 +36,26 @@ Line.remove({}, function(err){
                     };
     var wMetro = new Metro(metroData);
 
-
     wMetro.save().then(function(metro, err){
       var lineObj = {};
       for (var i=0; i<metro.lines.length; i++){
-        new Line({name: metro.lines[i], createdAt: Date()}).getStations(metro).then(function(line){
+        new Line({name: metro.lines[i]}).getStations(metro).then(function(line){
           var code = line.name;
           lineObj[code] = line;
           return new Promise(function(resolve, reject){
             if (Object.keys(lineObj).length == 6){
-              // console.log("Got some details for stations...")
+              console.log("Got station list.")
               resolve(lineObj);
             }
           });
         }).then(function(linesObj){
-            linesObj.RD.getDistances().then(function(line){
-              // console.log("Got distances for "+line.name+" line.");
-            })
-
+          functionLib.getDistances(linesObj).then(function(lo){
+            // functionLib.getAllTrains(lo).then(function(loi){
+            //   console.log(loi);
+            // })
+            console.log("a")
+            console.log(util.inspect(JSON.parse(JSON.stringify(lo)), false, null));
+          })
         })
       }
     })
