@@ -11,7 +11,6 @@ var MetroSchema = new Schema({
   lines: [String],
   firstStations: Object,
   lastStations: Object
-
 });
 
 var TrainSchema = new Schema({
@@ -127,68 +126,32 @@ LineSchema.methods.getStations = function(metro) {
 // don't need api call for this method...do this after getAllTrains
 LineSchema.methods.getAvgWait = function() {
   for (var i=0;i<this.stations.length;i++){
-    var averageIn = 0;
-    var averageOut = 0;
-    var numIn = 0;
-    var numOut = 0;
+    var diffsIn = [];
+    var diffsOut = [];
     for (var j=0;j<this.stations[i].trains.length;j++){
-      console.log(this.stations[i].trains[j].direction)
       if (this.stations[i].trains[j].direction == "1"){
-        numIn++;
+        var time1 = functionLib.getNumber(this.stations[i].trains[j].status);
+        for (var k=j+1; k< this.stations[i].trains.length; k++){
+          if (this.stations[i].trains[k].direction == "1"){
+            var time2 = functionLib.getNumber(this.stations[i].trains[k].status);
+            diffsIn.push(time2-time1);
+            break;
+          }
+        }
+        if (!time2){
+          diffsIn.push(time1);
+        }
       }else if (this.stations[i].trains[j].direction == "2"){
-        numOut++;
-      }
-      if (this.stations[i].trains[j].direction == "1" && this.stations[i].trains[j].status != 'BRD' && this.stations[i].trains[j].status != 'ARR'){
-        averageIn+= parseInt(this.stations[i].trains[j].status);
-      } else if(this.stations[i].trains[j].direction == "2" && this.stations[i].trains[j].status != 'BRD' && this.stations[i].trains[j].status != 'ARR'){
-        averageOut+= parseInt(this.stations[i].trains[j].status);
+        var time1 = functionLib.getNumber(this.stations[i].trains[j].status);
       }
     }
-    console.log(numIn+" "+numOut)
     var waitObj = {
-                    in: averageIn/numIn,
-                    out: averageOut/numOut
+                  in: averageIn/numIn,
+                  out: averageOut/numOut
                   };
     console.log(waitObj)
     }
-
 };
-
-// function to get the distance between a station and previous in minutes
-// loops through a station array and adds this information to the station
-// https://developer.wmata.com/docs/services/5476364f031f590f38092507/operations/5476364f031f5909e4fe3313
-LineSchema.methods.getDistances = function() {
-
-};
-
-// update all trains on a line here, maybe also check for delays
-// call this to get an update on a line.  probably delete.
-// LineSchema.methods.update = function() {
-//   var self = this;
-//   this.trains = []; // unsure if this works...
-//   var queryStr = "";
-//   for (var i=0; i<this.stations.length; i++){
-//     queryStr+=this.stations[i].code;
-//     queryStr+=",";
-//   }
-//   var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/"+queryStr+"?api_key="+env.apiKey
-//   return new Promise(function(resolve, reject){
-//     request(url, function(err, res){
-//       if (!err){
-//         resJSON = JSON.parse(res.body);
-//         if (resJSON.Trains) {
-//           for (var i=0;i<resJSON.Trains.length;i++){
-//             if (functionLib.validTrain(resJSON.Trains[i])){
-//               var train = new Train(functionLib.constructTrainData(resJSON.Trains[i]));
-//               self.trains.push(train);
-//             }
-//           }
-//         }
-//         resolve(self);
-//       }
-//     })
-//   })
-// };
 
 // function to eliminate "ghost trains," ie train duplicates
 // call this after .update is called, also exlcude trains not
@@ -206,4 +169,4 @@ mongoose.model('Metro', MetroSchema);
 var Station = require('../models/station.js');
 var Train = require('../models/train.js');
 var Line = require('../models/line.js');
-var functionLib = require('../function_lib/functions.js')
+var functionLib = require('../function_lib/functions.js');

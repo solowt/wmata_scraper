@@ -4,18 +4,6 @@ var Train = require('../models/train.js');
 var Line = require('../models/line.js');
 var env = require('../env.js');
 
-
-// start the ball rolling
-var initLines = function() {
-
-}
-
-// function to continually update lines (an array of lines?)
-// setInterval or something else
-var loopUpdate = function() {
-
-}
-
 // take all lines as an array, update every station's (nested on line)
 // trains array.  do an api call for All trains. lineObj = {code=>Line}
 var getAllTrains = function(lineObj) {
@@ -73,7 +61,7 @@ var findStations = function(element, index, array){
 }
 
 // take a single element on a wmata train array and construct a
-// train model from that data
+// train model data object from that data
 var constructTrainData = function(data){
   var trainData = {
     createdAt: Date(),
@@ -90,6 +78,7 @@ var constructTrainData = function(data){
   return trainData;
 }
 
+// currently hard coded - this not in use.  will have to make object later.
 var makeLineObj = function(line){
   var code = line.name;
   console.log(this.lineObj)
@@ -102,6 +91,38 @@ var makeLineObj = function(line){
     }
   });
 }
+
+// takes an input of a string and parses it as an int. unless it is equal
+// to "BRD" or "ARR" and then returns 0
+var getNumber = function(str){
+  if (str=="BRD" || str=="ARR"){
+    return 0;
+  }else{
+    return parseInt(str);
+  }
+}
+
+// function to get the distance between a station and previous in minutes
+// loops through a station array and adds this information to the station
+var getDistances = function(linesObj) {
+  var apiKey = env.apiKey;
+  return new Promise(function(resolve, reject){
+    request("https://api.wmata.com/Rail.svc/json/jSrcStationToDstStationInfo?FromStationCode=&ToStationCode=&api_key="+apiKey, function(err, res){
+      var resJSON = JSON.parse(res.body);
+      for (var i=0; i<resJSON.StationToStationInfos; i++){
+        var targetCode = resJSON.StationToStationInfos[i].DesinationCode;
+        for (key in linesObj){
+          var aStation = linesObj[key].stations.find(findStations.bind({loc:targetCode}))
+          if (aStation){
+            if (!aStation.timePrev || aStation.timePrev>resJSON.StationToStationInfos[i].RailTime){
+              aStation.timePrev = resJSON.StationToStationInfos[i].RailTime;
+            }
+          }
+        }
+      }
+    })
+  });
+};
 
 module.exports = {
   getAllTrains: getAllTrains,

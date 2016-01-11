@@ -1,2 +1,9 @@
 curl -v -X GET "https://api.wmata.com/Rail.svc/json/jPath?FromStationCode=E10&ToStationCode=G05"
 -H "api_key: {635e0ed2348f420cbe874f1bcd5d1b11}"
+
+.then(functionLib.getAllTrains).then(function(lineObjA){
+  for (var key in lineObjA){
+    // lineObjA[key].getAvgWait();
+    lineObjA[key].save().then(function(){console.log("saved")})
+  }
+})
