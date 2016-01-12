@@ -1,0 +1,81 @@
+.station {
+  display: inline-block;
+  float: left;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid black;
+  width: 61px;
+  height: 180px;
+  /*vertical-align: middle;*/
+  text-align: center;
+}
+.contained {
+  display: inline-block;
+
+}
+
+.RD {
+  border: 2px solid red;
+}
+.SV {
+  border: 2px solid grey;
+}
+.YL {
+  border: 2px solid gold;
+}
+.GR {
+  border: 2px solid green;
+}
+.BL {
+  border: 2px solid blue;
+}
+.OR {
+  border: 2px solid orange;
+}
+
+.centerdiv{
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  /*height: 50%;*/
+  text-align: center;
+}
+
+
+.stationinfo1 {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.stationinfo2 {
+  top: 100;
+  width: 100%;
+}
+
+.centertext {
+  text-align: center;
+}
+
+.stationName {
+  font-size: 80%;
+  display: inline-block;
+  margin-top: 45px;
+  margin-bottom:auto;
+  width:100%;
+  /*background: red;*/
+}
+
+.trainTop {
+  width: 100%;
+  height: 75px;
+  margin-bottom: 3px;
+  border: 2px solid black;
+}
+.trainBottom {
+  width: 100%;
+  height: 75px;
+  border: 2px solid black;
+}

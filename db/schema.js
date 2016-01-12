@@ -12,6 +12,7 @@ var MetroSchema = new Schema({
   firstStations: Object,
   lastStations: Object
 });
+
 mongoose.model('Metro', MetroSchema);
 
 var TrainSchema = new Schema({
@@ -197,27 +198,31 @@ LineSchema.methods.getTrains = function(){
     queryStr +=',';
   }
   var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/"+queryStr+"?api_key="+env.apiKey;
-  console.log(this.name+": "+queryStr)
+  // console.log(this.name+": "+queryStr)
   return new Promise(function(resolve, reject){
     request(url, function(err, res){
-      resJSON = JSON.parse(res.body);
-      if (resJSON.Trains){
-        for (var i=0;i < resJSON.Trains.length; i++){
-          if (functionLib.validTrain(resJSON.Trains[i])) {
-            var locationCode = resJSON.Trains[i].LocationCode;
-            var lineCode = resJSON.Trains[i].Line;
-            if (lineCode == self.name) {
-              var newTrain = new Train(functionLib.constructTrainData(resJSON.Trains[i]));
-              if (newTrain.direction == "2"){
-                self.stations.find(functionLib.findStations.bind({loc:locationCode})).trainsOut.push(newTrain);
-              } else if (newTrain.direction == "1"){
-                self.stations.find(functionLib.findStations.bind({loc:locationCode})).trainsIn.push(newTrain);
+      if (!err) {
+        resJSON = JSON.parse(res.body);
+        if (resJSON.Trains){
+          for (var i=0;i < resJSON.Trains.length; i++){
+            if (functionLib.validTrain(resJSON.Trains[i])) {
+              var locationCode = resJSON.Trains[i].LocationCode;
+              var lineCode = resJSON.Trains[i].Line;
+              if (lineCode == self.name) {
+                var newTrain = new Train(functionLib.constructTrainData(resJSON.Trains[i]));
+                if (newTrain.direction == "2"){
+                  self.stations.find(functionLib.findStations.bind({loc:locationCode})).trainsOut.push(newTrain);
+                } else if (newTrain.direction == "1"){
+                  self.stations.find(functionLib.findStations.bind({loc:locationCode})).trainsIn.push(newTrain);
+                }
               }
             }
           }
+          self.getTrainNum();
+          resolve(self);
         }
-        self.getTrainNum();
-        resolve(self);
+      } else {
+        console.log("Error: "+err);
       }
     });
   });

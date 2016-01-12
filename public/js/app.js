@@ -16,6 +16,12 @@
       templateUrl: "js/lines/index.html",
       controller: "LinesController",
       controllerAs: "LinesViewModel"
+    })
+    .state("lineShow", {
+      url: "/index/:ln",
+      templateUrl: "js/lines/show.html",
+      controller: "LineShowController",
+      controllerAs: "LineShowViewModel"
     });
   }
 })();

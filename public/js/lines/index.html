@@ -1,1 +1,4 @@
-<h1>AD</h1>
+<h1 class="centertext">Select a Line</h1>
+<div data-ng-repeat="line in LinesViewModel.lines">
+  <p class="centertext"><a data-ui-sref="lineShow({ln: line})">{{line}}</a></p>
+</div>

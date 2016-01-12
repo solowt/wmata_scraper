@@ -77,7 +77,7 @@ var clearTrains = function(lineObj) {
 // attached. some trains will be missing this info and should not be
 // considered.
 var validTrain = function(train) {
-  if (train.DestinationName && train.Min && train.Min.length > 0 && train.DestinationName != "No Passenger" && train.Line != "--"){
+  if (train.DestinationName && train.Min && train.Min.length > 0 && train.DestinationName != "No Passenger" && train.Line != "--" && train.Car != null && train.Car != '-'){
     return true;
   }else{
     return false;

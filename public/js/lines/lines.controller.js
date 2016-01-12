@@ -8,6 +8,6 @@
     LinesControllerFunction
   ]);
   function LinesControllerFunction($stateParams){
-    console.log("aa")
+    this.lines=["RD", "YL", "GR", "BL", "OR", "SV"];
   }
 })();

@@ -2,5 +2,7 @@
 
 (function(){
   angular
-  .module("lines", []);
+  .module("lines", [
+    "ngResource"
+  ]);
 })();

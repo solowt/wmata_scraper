@@ -1,0 +1,13 @@
+<h1 class="centertext">
+  →To {{LineShowViewModel.line.stations[LineShowViewModel.line.stations.length-1].name}}→
+</h1>
+<div class="trainTop"></div>
+<div class="centerdiv">
+  <div class="contained" data-ng-repeat="station in LineShowViewModel.line.stations">
+    <station data-stop="station" data-vm="LineShowViewModel"></station>
+  </div>
+</div>
+<div class="trainBottom"></div>
+<h1 class="centertext">
+  ←To {{LineShowViewModel.line.stations[0].name}}←
+</h1>
