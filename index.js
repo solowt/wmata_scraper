@@ -1,5 +1,4 @@
 var express = require('express');
-var router = require('./config/routes');
 var bodyParser = require('body-parser');
 var Station = require('./models/station.js');
 var Train = require('./models/train.js');
@@ -12,11 +11,10 @@ var cors = require('cors');
 
 
 var app = express();
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 //app.set("views") set templating here is necessary
 
 app.use(express.static(__dirname + '/public'));
-
 
 app.get('/lines/:code', cors(), function(req, res){
   var line = lineObject[req.params.code];

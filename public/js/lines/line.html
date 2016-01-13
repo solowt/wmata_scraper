@@ -1,0 +1,13 @@
+<div>
+  <div class="contained" ng-repeat="station in line.stations">
+    <div ng-click="sendData(station)" class="station {{station.line}}">
+      <div class="stationinfo2">
+        {{station.trainsOut[0].status || "N/A"}}
+      </div>
+      <div class="stationName">{{station.name}}</div>
+      <div class="stationinfo1">
+        {{station.trainsIn[0].status || "N/A"}}
+      </div>
+    </div>
+  </div>
+</div>

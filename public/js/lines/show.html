@@ -1,11 +1,22 @@
+<div class={{"timetable"+LineShowViewModel.station.line}} ng-show="showForm">
+  <div><h4>Arriving at {{LineShowViewModel.station.name}}:</h4>
+    <div data-ng-repeat="stop in LineShowViewModel.station.trainsIn">
+      ←Destination: {{stop.dest}} | ETA: {{stop.status}} | Cars: {{stop.numCars}}
+    </div>
+  </div>
+  <hr ng-show="LineShowViewModel.station.trainsOut.length>0 && LineShowViewModel.station.trainsIn.length>0" class={{"hr"+LineShowViewModel.station.line}}>
+  <div>
+    <div data-ng-repeat="stop in LineShowViewModel.station.trainsOut">
+      →Destination: {{stop.dest}} | ETA: {{stop.status}} | Cars: {{stop.numCars}}
+    </div>
+  </div>
+</div>
 <h1 class="centertext">
   →To {{LineShowViewModel.line.stations[LineShowViewModel.line.stations.length-1].name}}→
 </h1>
 <div class="trainTop"></div>
-<div class="centerdiv">
-  <div class="contained" data-ng-repeat="station in LineShowViewModel.line.stations">
-    <station data-stop="station" data-vm="LineShowViewModel"></station>
-  </div>
+<div ng-click="showForm=true"class="centerdiv">
+  <line data-$scope="$scope" data-line="LineShowViewModel.line" data-vm="LineShowViewModel"></station>
 </div>
 <div class="trainBottom"></div>
 <h1 class="centertext">
