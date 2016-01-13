@@ -1,3 +1,28 @@
+.nav{
+  width: 100%;
+  text-align: center;
+}
+a {
+
+}
+
+ul, li {
+  padding: 5px;
+  list-style: none;
+  display: inline-block;
+}
+ul{
+  margin: 0 auto;
+}
+
+img {
+  width: 950px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid black;
+}
+
 .station {
   display: inline-block;
   float: right;
@@ -7,6 +32,51 @@
   border: 2px solid black;
   width: 61px;
   height: 180px;
+}
+
+.train {
+  background-color: black;
+}
+
+.info {
+  position: absolute;
+  right: 20px;
+  height: 150px;
+  width: 400px;
+  /*background-color: black;*/
+  border: 8px solid black;
+  text-align: center;
+}
+
+.container {
+  position: relative;
+  /*background-color: green;*/
+  height: 220px;
+  width: 100%;
+}
+
+.delays {
+  display: inline;
+  float: right;
+  border: 8px solid black;
+  width: 500px;
+  height: 220px;
+  padding-left: 10px;
+}
+
+.rail {
+  display: inline-block;
+  float: right;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid black;
+  width: 61px;
+  height: 75px;
+}
+
+.station:hover{
+  background-color: tan;
 }
 .contained {
   display: inline-block;
@@ -25,29 +95,22 @@
   border-color: red;
 }
 .timetableRD {
+  text-align: center;
+  position: absolute;
   border: 8px solid red;
   width: 500px;
   height: 220px;
   padding-left: 10px;
 }
 
-.hrRD {
-  width: 465px;
-  height: 5px;
-  border-color: red;
-}
-.timetableRD {
-  border: 5px solid red;
-  width: 500px;
-  height: 220px;
-  padding-left: 10px;
-}
 .hrYL {
   width: 465px;
   height: 5px;
   border-color: gold;
 }
 .timetableYL {
+  text-align: center;
+  position: absolute;
   border: 5px solid gold;
   width: 500px;
   height: 220px;
@@ -59,6 +122,8 @@
   border-color: green;
 }
 .timetableGR {
+  text-align: center;
+  position: absolute;
   border: 5px solid green;
   width: 500px;
   height: 220px;
@@ -70,6 +135,8 @@
   border-color: silver;
 }
 .timetableSV {
+  text-align: center;
+  position: absolute;
   border: 5px solid silver;
   width: 500px;
   height: 220px;
@@ -81,6 +148,8 @@
   border-color: orange;
 }
 .timetableOR {
+  text-align: center;
+  position: absolute;
   border: 5px solid orange;
   width: 500px;
   height: 220px;
@@ -92,6 +161,8 @@
   border-color: blue;
 }
 .timetableBL {
+  text-align: center;
+  position: absolute;
   border: 5px solid blue;
   width: 500px;
   height: 220px;
@@ -151,5 +222,9 @@
 .trainBottom {
   width: 100%;
   height: 75px;
-  border: 2px solid black;
+  border: 2px solid blac.k;
+}
+
+.train {
+
 }

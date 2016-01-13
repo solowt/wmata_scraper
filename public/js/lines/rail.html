@@ -1,0 +1,7 @@
+<div>
+  <div class="contained" ng-repeat="station in stations">
+    <div class="rail" ng-attr-id="{{str + $index }}">
+      {{drawTrains($index, str)}} {{direction}}<br>{{direction}}<br>{{direction}}
+    </div>
+  </div>
+</div>

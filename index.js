@@ -28,7 +28,13 @@ app.get('/lines', cors(), function(req, res){
   functionLib.getTrainsWrapper(lineObject).then(function(o){
     console.log("Got all Trains per each line.")
     res.json(o);
-  })
+  });
+});
+
+app.get('/incidents', cors(), function(req, res){
+  functionLib.getIncidents().then(function(resp){
+    res.json(resp);
+  });
 });
 
 app.listen(3000, function(){

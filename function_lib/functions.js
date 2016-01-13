@@ -174,6 +174,19 @@ var killGhostsWrapper = function(linesObj){
   return linesObj;
 }
 
+var getIncidents = function(){
+  var url="https://api.wmata.com/Incidents.svc/json/Incidents?api_key="+env.apiKey;
+  return new Promise(function(resolve, reject){
+    request(url, function(err, res){
+      if (!err){
+        resJSON = JSON.parse(res.body);
+        // console.log(resJSON)
+        resolve(resJSON)
+      }
+    });
+  });
+}
+
 module.exports = {
   getAllTrains: getAllTrains,
   validTrain: validTrain,
@@ -184,5 +197,6 @@ module.exports = {
   killGhostsWrapper: killGhostsWrapper,
   getNumber: getNumber,
   findStations: findStations,
-  getTrainsWrapper: getTrainsWrapper
+  getTrainsWrapper: getTrainsWrapper,
+  getIncidents: getIncidents
 };

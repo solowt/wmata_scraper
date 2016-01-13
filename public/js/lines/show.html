@@ -1,24 +1,31 @@
-<div class={{"timetable"+LineShowViewModel.station.line}} ng-show="showForm">
-  <div><h4>Arriving at {{LineShowViewModel.station.name}}:</h4>
-    <div data-ng-repeat="stop in LineShowViewModel.station.trainsIn">
-      ←Destination: {{stop.dest}} | ETA: {{stop.status}} | Cars: {{stop.numCars}}
+<div class="container">
+  <div class={{"timetable"+LineShowViewModel.station.line}} ng-show="showForm">
+    <div><h4>Arriving at {{LineShowViewModel.station.name}}:</h4>
+      <div data-ng-repeat="stop in LineShowViewModel.station.trainsIn">
+        ←Destination: {{stop.dest}} | ETA: {{stop.status}} | Cars: {{stop.numCars}}
+      </div>
+    </div>
+    <hr ng-show="LineShowViewModel.station.trainsOut.length>0 && LineShowViewModel.station.trainsIn.length>0" class={{"hr"+LineShowViewModel.station.line}}>
+    <div>
+      <div data-ng-repeat="stop in LineShowViewModel.station.trainsOut">
+        →Destination: {{stop.dest}} | ETA: {{stop.status}} | Cars: {{stop.numCars}}
+      </div>
     </div>
   </div>
-  <hr ng-show="LineShowViewModel.station.trainsOut.length>0 && LineShowViewModel.station.trainsIn.length>0" class={{"hr"+LineShowViewModel.station.line}}>
-  <div>
-    <div data-ng-repeat="stop in LineShowViewModel.station.trainsOut">
-      →Destination: {{stop.dest}} | ETA: {{stop.status}} | Cars: {{stop.numCars}}
-    </div>
+  <div ng-show="showForm"class="info">
+    {{LineShowViewModel.station.name}} → {{LineShowViewModel.station2.name}}<br><br><br>
+    Miles: {{LineShowViewModel.distance}}<br>
+    Track Time (minutes): {{LineShowViewModel.mins}}
   </div>
 </div>
 <h1 class="centertext">
   →To {{LineShowViewModel.line.stations[LineShowViewModel.line.stations.length-1].name}}→
 </h1>
-<div class="trainTop"></div>
+<div class="centerdiv trainTop"><rail data-str="top"data-times="LineShowViewModel.timesOut" data-stations="LineShowViewModel.stations"></rail></div>
 <div ng-click="showForm=true"class="centerdiv">
-  <line data-$scope="$scope" data-line="LineShowViewModel.line" data-vm="LineShowViewModel"></station>
+  <line data-line="LineShowViewModel.line" data-vm="LineShowViewModel"></station>
 </div>
-<div class="trainBottom"></div>
+<div class="centerdiv trainBottom"><rail data-str="bot" data-times="LineShowViewModel.timesIn" data-stations="LineShowViewModel.stations"></rail></div>
 <h1 class="centertext">
   ←To {{LineShowViewModel.line.stations[0].name}}←
 </h1>

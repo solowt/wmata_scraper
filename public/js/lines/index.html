@@ -1,4 +1,9 @@
 <h1 class="centertext">Select a Line</h1>
-<div data-ng-repeat="line in LinesViewModel.lines">
-  <p class="centertext"><a data-ui-sref="lineShow({ln: line})">{{line}}</a></p>
+<div class="nav">
+<ul>
+  <li data-ng-repeat="line in LinesViewModel.lines">
+    <a data-ui-sref="lineShow({ln: line})">{{line}}</a>
+  </li>
+</ul>
 </div>
+<img src="/assets/metroimg.png"/>

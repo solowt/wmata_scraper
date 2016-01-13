@@ -12,19 +12,19 @@
       templateUrl: "js/lines/line.html",
       replace: true,
       // controller: "LineShowController",
-      // bindToController: true,
+      bindToController: true,
       restrict: "E",
       scope: {
         line: '=',
-        vm: '=',
-        $scope: '='
+        vm: '='
+        // $scope: '='
       },
       link: function(scope){
         // scope.line = scope.vm.line;
         scope.sendData = function(stop) {
           scope.vm.showTimes(stop);
         }
-        console.log("In directive.");
+        console.log("In line directive.");
       }
     }
   }
