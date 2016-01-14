@@ -17,17 +17,18 @@
     this.delays = [];
     DelayFactory.query({}, function(res){
       for (var j=0; j<res.length; j++){
-        if ($.inArray($stateParams.ln, res[j].lines)){
-          self.delays.push(res[j]);
+        for (var k=0; k<res[j].lines.length; k++){
+          if ($stateParams.ln == res[j].lines[k]){
+            self.delays.push(res[j]);
+          }
         }
       }
     });
-
-    this.line = helper.serveLines();
+    this.line = helper.staticLines[$stateParams.ln];
     this.trackInfo = {
-      totalDistance: this.line[$stateParams.ln].totalDist,
-      miles: (this.line[$stateParams.ln].totalDist/5280).toFixed(2),
-      numStations: this.line[$stateParams.ln].numStations
+      totalDistance: this.line.totalDist,
+      miles: (this.line.totalDist/5280).toFixed(2),
+      numStations: this.line.numStations
       }
     this.initArrays = function() {
       self.timesIn = [];
@@ -56,7 +57,7 @@
     }
     this.getData()
     //SET THIS INTERVAL
-    // $interval(this.getData, 5000);
+    // $interval(this.getData, 10000);
 
     this.show = false;
     var counter = 0;

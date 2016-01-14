@@ -1,18 +1,15 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-// var Station = require('./models/station.js');
-// var Train = require('./models/train.js');
+
+
+
 var Line = require('./models/line.js');
 var functionLib = require('./function_lib/functions.js')
 var lineObject = require('./structer.js')
 var cors = require('cors');
 
-// var mongoose = require('mongoose');
-
-console.log(process.env.KEY)
 var app = express();
-// app.use(bodyParser.json());
-//app.set("views") set templating here is necessary
+app.set('port', (process.env.PORT || 3000));
 
 app.use(express.static(__dirname + '/public'));
 
@@ -37,6 +34,6 @@ app.get('/incidents', cors(), function(req, res){
   });
 });
 
-app.listen(3000, function(){
-  console.log("App listening on port 3000.")
+app.listen(app.get('port'), function(){
+  console.log("App listening on port", app.get('port'))
 })

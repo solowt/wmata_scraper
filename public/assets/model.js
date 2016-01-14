@@ -1,7 +1,5 @@
 var helper = (function helpers(){
-  var output = {};
-  output.serveLines = function() {
-    return {    RD:
+  var output = {staticLines: {    RD:
            { totalDist: 166759,
              numStations: 27,
              name: 'RD',
@@ -1345,7 +1343,8 @@ var helper = (function helpers(){
                   name: 'Wiehle-Reston East',
                   line: 'SV',
                   trains: [] } ] } }
+                  };
 
-                 }
+
                  return output;
             })()

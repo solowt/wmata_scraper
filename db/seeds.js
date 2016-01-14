@@ -6,7 +6,7 @@ var Metro = require('../models/metro.js');
 var functionLib = require('../function_lib/functions.js');
 var util = require('util');
 
-var conn = mongoose.connect('mongodb://localhost/wmata-scraper')
+// var conn = mongoose.connect('mongodb://localhost/wmata-scraper')
 
 Line.remove({}, function(err){
   Metro.remove({}, function(err){

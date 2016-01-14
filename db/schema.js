@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
-var env = require('../env.js');
+var fs = require("fs");
+var env = fs.existsSync("./env.js") ? require("../env") : process.env;
 var request = require('request');
 
 
@@ -58,7 +59,7 @@ var StationSchema = new Schema({
 // probably delete this
 StationSchema.methods.getTrains = function() {
   var self = this;
-  var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/"+this.code+"?api_key="+env.apiKey;
+  var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/"+this.code+"?api_key="+env.KEY;
   return new Promise(function(resolve, reject){
     request(url, function(err, res){
       if (!err){
@@ -110,7 +111,7 @@ LineSchema.methods.getTrainNum = function() {
 LineSchema.methods.getStations = function(metro) {
   var self = this;
   return new Promise(function(resolve, reject){
-    var url = "https://api.wmata.com/Rail.svc/json/jPath?FromStationCode="+metro.firstStations[self.name].code+"&ToStationCode="+metro.lastStations[self.name].code+"&api_key="+env.apiKey;
+    var url = "https://api.wmata.com/Rail.svc/json/jPath?FromStationCode="+metro.firstStations[self.name].code+"&ToStationCode="+metro.lastStations[self.name].code+"&api_key="+env.KEY;
     request(url, function(err, res){
       if (!err){
         var resJSON = JSON.parse(res.body);
@@ -197,7 +198,7 @@ LineSchema.methods.getTrains = function(){
     queryStr += this.stations[i].code;
     queryStr +=',';
   }
-  var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/"+queryStr+"?api_key="+env.apiKey;
+  var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/"+queryStr+"?api_key="+env.KEY;
   // console.log(this.name+": "+queryStr)
   return new Promise(function(resolve, reject){
     request(url, function(err, res){

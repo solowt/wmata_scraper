@@ -3,14 +3,15 @@ var request = require('request');
 var Station = require('../models/station.js');
 var Train = require('../models/train.js');
 var Line = require('../models/line.js');
-var env = require('../env.js');
+var fs = require("fs");
+var env = fs.existsSync("./env.js") ? require("../env") : process.env;
 
 // take all lines as an array, update every station's (nested on line)
 // trains array.  do an api call for All trains. lineObj = {code=>Line}
 // this has a bug, not currently in use.
 var getAllTrains = function(lineObj) {
   lineObj = clearTrains(lineObj);
-  var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/All?api_key="+env.apiKey;
+  var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/All?api_key="+env.KEY;
   return new Promise(function(resolve, reject){
     request(url, function(err, res){
       resJSON = JSON.parse(res.body);
@@ -139,9 +140,9 @@ var getNumber = function(str){
 // function to get the distance between a station and previous in minutes
 // loops through a station array and adds this information to the station
 var getDistances = function(linesObj) {
-  var apiKey = env.apiKey;
+  var KEY = env.KEY;
   return new Promise(function(resolve, reject){
-    request("https://api.wmata.com/Rail.svc/json/jSrcStationToDstStationInfo?FromStationCode=&ToStationCode=&api_key="+apiKey, function(err, res){
+    request("https://api.wmata.com/Rail.svc/json/jSrcStationToDstStationInfo?FromStationCode=&ToStationCode=&api_key="+KEY, function(err, res){
       var resJSON = JSON.parse(res.body);
       for (var i=0; i<resJSON.StationToStationInfos.length; i++){
         var targetCode = resJSON.StationToStationInfos[i].DestinationStation;
@@ -175,7 +176,7 @@ var killGhostsWrapper = function(linesObj){
 }
 
 var getIncidents = function(){
-  var url="https://api.wmata.com/Incidents.svc/json/Incidents?api_key="+env.apiKey;
+  var url="https://api.wmata.com/Incidents.svc/json/Incidents?api_key="+env.KEY;
   return new Promise(function(resolve, reject){
     request(url, function(err, res){
       if (!err){
