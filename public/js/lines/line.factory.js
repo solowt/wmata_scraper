@@ -9,6 +9,6 @@
   ]);
 
   function LineFactoryFunction($resource){
-    return $resource("https://infinite-spire-8251.herokuapp.com/lines:ln", {});
+    return $resource("https://infinite-spire-8251.herokuapp.com/lines/:ln", {});
   }
 }());
