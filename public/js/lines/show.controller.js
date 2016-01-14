@@ -3,6 +3,7 @@
   .module("lines")
   .controller("LineShowController", [
     "LineFactory",
+    "DelayFactory",
     "$stateParams",
     "$state",
     "$scope",
@@ -10,17 +11,24 @@
     ShowFunction
   ]);
 
-
-  function ShowFunction(LineFactory, $stateParams, $state, $scope, $interval){
+  function ShowFunction(LineFactory, DelayFactory, $stateParams, $state, $scope, $interval){
     console.log("in controller");
     var self=this;
+    this.delays = [];
+    DelayFactory.query({}, function(res){
+      for (var j=0; j<res.length; j++){
+        if ($.inArray($stateParams.ln, res[j].lines)){
+          self.delays.push(res[j]);
+        }
+      }
+    });
+
     this.line = window.staticLines[$stateParams.ln]
     this.trackInfo = {
       totalDistance: this.line.totalDist,
       miles: (this.line.totalDist/5280).toFixed(2),
-      numStations: this.line.numStations,
-      alerts: []
-    }
+      numStations: this.line.numStations
+      }
     this.initArrays = function() {
       self.timesIn = [];
       self.timesOut = [];
@@ -53,8 +61,14 @@
     this.show = false;
     var counter = 0;
     this.showTimes = function(stop) {
-      if (counter>=1){
+      if (counter == 2){
+        counter = 0;
+        $("#"+this.station2.name.split(' ').slice(0, 1)[0]).removeClass("highlight")
+        $("#"+this.station.name.split(' ').slice(0, 1)[0]).removeClass("highlight")
+      }
+      if (counter==1){
         this.station2 = stop;
+        $("#"+this.station2.name.split(' ').slice(0, 1)[0]).addClass("highlight")
         this.distance = 0;
         this.mins = 0;
         var index1 = this.station.sequence-1;
@@ -73,12 +87,14 @@
           console.log("Same station selected.")
         }
         this.distance = (this.distance/5280).toFixed(2);
-        counter = 0;
+        counter++;
         // this.show= true;
-      }else {
+      }else if (counter==0){
         counter++;
         this.station = stop;
         this.station2 = "";
+        $("#"+this.station.name.split(' ').slice(0, 1)[0]).addClass("highlight")
+
       }
     }
   }

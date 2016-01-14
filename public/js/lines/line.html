@@ -1,6 +1,6 @@
 <div>
   <div class="contained" ng-repeat="station in line.stations">
-    <div ng-click="sendData(station)" class="station {{station.line}}">
+    <div ng-click="sendData(station)" id="{{station.name.split(' ').slice(0, 1)[0]}}"class="station {{station.line}}">
       <div class="stationinfo2">
         {{station.trainsOut[0].status || "N/A"}}
       </div>

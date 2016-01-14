@@ -180,8 +180,19 @@ var getIncidents = function(){
     request(url, function(err, res){
       if (!err){
         resJSON = JSON.parse(res.body);
-        // console.log(resJSON)
-        resolve(resJSON)
+        if (resJSON.Incidents){
+          var resp = [];
+          for (var i=0; i<resJSON.Incidents.length; i++){
+            var resObj = {
+                        lines: resJSON.Incidents[i].LinesAffected.split(/;[\s]?/).filter(function(fn) { return fn !== ''; }),
+                        message: resJSON.Incidents[i].Description,
+                        type: resJSON.Incidents[i].IncidentType,
+                        date: resJSON.Incidents[i].DateUpdated
+                        }
+            resp.push(resObj);
+          }
+        }
+        resolve(resp)
       }
     });
   });

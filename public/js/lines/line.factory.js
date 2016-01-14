@@ -9,6 +9,6 @@
   ]);
 
   function LineFactoryFunction($resource){
-    return $resource("http://localhost:3000/lines/:ln", {});
+    return $resource("http://localhost:3000/lines/:ln", {})
   }
 }());

@@ -6,8 +6,9 @@ html{
   width: 100%;
   text-align: center;
 }
-a {
-
+.wordwrap {
+  display: inline-block;
+  word-wrap: break-word;
 }
 
 ul, li {
@@ -15,13 +16,32 @@ ul, li {
   list-style: none;
   display: inline-block;
 }
-ul{
+.nav ul{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
   margin: 0 auto;
+}
+a:hover:not(.active) {
+    background-color: #111;
+}
+.active {
+background-color:#4CAF50;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
 }
 .trainwrapper{
   position: absolute;
   left: 400px;
-  top:600px;
+  top:400px;
 }
 
 .trainbody{
@@ -210,6 +230,10 @@ img {
 
 .trackz{
 
+}
+.highlight{
+  color: green;
+  background-color: black;
 }
 
 .train {

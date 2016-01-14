@@ -16,12 +16,12 @@
       restrict: "E",
       scope: {
         times: '=',
-        trains: '=',
         stations: '=',
-        vm: '=',
         str: '@'
       },
       link: function(scope, elm){
+        scope.trainTemplate="<div class='trainwrapper'><div class='trainbody'><div class='car'></div><div class='link'></div><div class='car'></div><div class='link'></div><div class='car'></div></div></div>"
+        // $(scope.trainTemplate).appendTo($("body")) works
         if(scope.str == "top"){
           scope.direction = "→"
         } else {
@@ -45,7 +45,6 @@
               $("#"+str+(index+1)).addClass("train");
           } else if (str == "bot" && scope.convert(scope.times[index])-scope.convert(scope.times[index+1]) <= 0){
               $("#"+str+(index)).addClass("train");
-              // console.log("aa")
           }
         }
         console.log("In rail directive.");

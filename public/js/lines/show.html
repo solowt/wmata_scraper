@@ -13,9 +13,9 @@
     </div>
   </div>
   <div class="delayz">
-    <h4>Information about the {{LineShowViewModel.line.name}} Line:</h4><br>
+    <h4>Information ({{LineShowViewModel.line.name}} Line):</h4>
     Track Length: {{LineShowViewModel.trackInfo.totalDistance}} feet ({{LineShowViewModel.trackInfo.miles}} miles)<br>
-    <div ng-show="LineShowViewModel.trackInfo.alerts[0]">Alerts:</div>
+    <div ng-show="LineShowViewModel.delays[0]">Alerts: <ul data-ng-repeat="incident in LineShowViewModel.delays"><li class="wordwrap">{{incident.description}}</li></ul></div>
   </div>
 
   <div ng-show="showForm"class="info">
