@@ -11,19 +11,48 @@
 
     <script src="js/app.js"></script>
     <script src="js/lines/lines.js"></script>
-    <script src="js/lines/lines.controller.js"></script>
     <script src="js/lines/show.controller.js"></script>
     <script src="js/lines/line.factory.js"></script>
     <script src="js/lines/line.directive.js"></script>
     <script src="js/lines/rail.directive.js"></script>
     <script src="assets/model.js"></script>
 
-
-
-
   </head>
-  <body>
-    <h4 class="centertext"><a data-ui-sref="getLines">Map</a></h4>
+    <body>
+<!-- <div class="trainwrapper">
+  <div class="trainbody">
+    <div class="car"></div>
+    <div class="link"></div>
+    <div class="car"></div>
+    <div class="link"></div>
+    <div class="car"></div>
+  </div>
+</div> -->
+
+      <h2 class="centertext">Select a Line</h2>
+      <div class="nav">
+        <ul>
+          <li>
+            <a data-ui-sref="lineShow({ln:'RD'})">Red</a>
+          </li>
+          <li>
+            <a data-ui-sref="lineShow({ln:'OR'})">Orange</a>
+          </li>
+          <li>
+            <a data-ui-sref="lineShow({ln:'YL'})">Yellow</a>
+          </li>
+          <li>
+            <a data-ui-sref="lineShow({ln:'GR'})">Green</a>
+          </li>
+          <li>
+            <a data-ui-sref="lineShow({ln:'BL'})">Blue</a>
+          </li>
+          <li>
+            <a data-ui-sref="lineShow({ln:'SV'})">Silver</a>
+          </li>
+      </ul>
+    </div>
     <div data-ui-view></div>
+    <img src="/assets/metroimg.png"/>
   </body>
 </html>

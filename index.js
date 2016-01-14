@@ -1,7 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var Station = require('./models/station.js');
-var Train = require('./models/train.js');
+// var Station = require('./models/station.js');
+// var Train = require('./models/train.js');
 var Line = require('./models/line.js');
 var functionLib = require('./function_lib/functions.js')
 var lineObject = require('./structer.js')

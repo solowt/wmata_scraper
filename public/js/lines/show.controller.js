@@ -6,59 +6,50 @@
     "$stateParams",
     "$state",
     "$scope",
+    "$interval",
     ShowFunction
   ]);
 
 
-  function ShowFunction(LineFactory, $stateParams, $state, $scope){
+  function ShowFunction(LineFactory, $stateParams, $state, $scope, $interval){
     console.log("in controller");
     var self=this;
-
-    this.staticLines = window.staticLines;
-    this.lineParams= $stateParams.ln;
-    this.line = this.staticLines[this.lineParams];
-    this.timesIn = [];
-    this.timesOut = [];
-    this.stations = [];
-
-    LineFactory.get({ln: $stateParams.ln}, function(res){
-      self.line.stations = res.stations;
-      for (var i=0; i<self.line.stations.length; i++){
-        self.stations.push(res.stations[i].name);
-        if (res.stations[i].trainsIn[0]){
-          self.timesIn.push(res.stations[i].trainsIn[0].status)
-        } else {
-          self.timesIn.push("N/A");
+    this.line = window.staticLines[$stateParams.ln]
+    this.trackInfo = {
+      totalDistance: this.line.totalDist,
+      miles: (this.line.totalDist/5280).toFixed(2),
+      numStations: this.line.numStations,
+      alerts: []
+    }
+    this.initArrays = function() {
+      self.timesIn = [];
+      self.timesOut = [];
+      self.stations = [];
+    }
+    this.initArrays()
+    this.getData = function() {
+      self.initArrays()
+      LineFactory.get({ln: $stateParams.ln}, function(res){
+        self.line.stations = res.stations;
+        for (var i=0; i<self.line.stations.length; i++){
+          self.stations.push(res.stations[i].name);
+          if (res.stations[i].trainsIn[0]){
+            self.timesIn.push(res.stations[i].trainsIn[0].status)
+          } else {
+            self.timesIn.push("N/A");
+          }
+          if (res.stations[i].trainsOut[0]){
+            self.timesOut.push(res.stations[i].trainsOut[0].status || null)
+          }else{
+            self.timesOut.push("N/A");
+          }
         }
-        if (res.stations[i].trainsOut[0]){
-          self.timesOut.push(res.stations[i].trainsOut[0].status || null)
-        }else{
-          self.timesOut.push("N/A");
-        }
-      }
-    });
-    
-    // this.line=LineFactory.get({ln: $stateParams.ln}, function(res){
-    //   for (var i=0; i<self.line.stations.length; i++){
-    //     self.stations.push(self.line.stations[i].name);
-    //     if (self.line.stations[i].trainsIn[0]){
-    //       self.timesIn.push(self.line.stations[i].trainsIn[0].status)
-    //     } else {
-    //       self.timesIn.push("N/A");
-    //     }
-    //     if (self.line.stations[i].trainsOut[0]){
-    //       self.timesOut.push(self.line.stations[i].trainsOut[0].status || null)
-    //     }else{
-    //       self.timesOut.push("N/A");
-    //     }
-    //   }
-    // });
+      });
+    }
+    this.getData()
+    //SET THIS INTERVAL
+    // $interval(this.getData, 5000);
 
-
-    // maybe set interval here
-    // setTimeout(function(){
-    //   self.line=LineFactory.get({ln:$stateParams.ln}, function(){console.log("aa")});
-    // }, 5000)
     this.show = false;
     var counter = 0;
     this.showTimes = function(stop) {
@@ -82,8 +73,6 @@
           console.log("Same station selected.")
         }
         this.distance = (this.distance/5280).toFixed(2);
-        console.log(this.distance);
-        console.log(this.mins);
         counter = 0;
         // this.show= true;
       }else {

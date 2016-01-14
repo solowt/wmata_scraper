@@ -1,4 +1,5 @@
-var staticLines =
+(function(){
+this.staticLines =
 {    RD:
        { totalDist: 166759,
          numStations: 27,
@@ -1343,3 +1344,4 @@ var staticLines =
               name: 'Wiehle-Reston East',
               line: 'SV',
               trains: [] } ] } }
+            })()
