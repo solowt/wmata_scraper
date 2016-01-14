@@ -23,7 +23,7 @@
       }
     });
 
-    this.line = window.staticLines[$stateParams.ln]
+    this.line = helper.serveLines();
     this.trackInfo = {
       totalDistance: this.line.totalDist,
       miles: (this.line.totalDist/5280).toFixed(2),
