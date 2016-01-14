@@ -9,7 +9,6 @@
   ]);
 
   function LineFactoryFunction($resource){
-    return $resource("http://localhost:3000/lines/:ln", {})
-    // http://localhost:3000/profiles/check?username
+    return $resource("https://infinite-spire-8251.herokuapp.com/lines:ln", {});
   }
 }());
