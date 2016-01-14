@@ -9,7 +9,7 @@ var cors = require('cors');
 
 // var mongoose = require('mongoose');
 
-
+console.log(process.env.KEY)
 var app = express();
 // app.use(bodyParser.json());
 //app.set("views") set templating here is necessary

@@ -25,9 +25,9 @@
 
     this.line = helper.serveLines();
     this.trackInfo = {
-      totalDistance: this.line.totalDist,
-      miles: (this.line.totalDist/5280).toFixed(2),
-      numStations: this.line.numStations
+      totalDistance: this.line[$stateParams.ln].totalDist,
+      miles: (this.line[$stateParams.ln].totalDist/5280).toFixed(2),
+      numStations: this.line[$stateParams.ln].numStations
       }
     this.initArrays = function() {
       self.timesIn = [];
