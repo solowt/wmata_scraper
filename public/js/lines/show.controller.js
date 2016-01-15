@@ -12,7 +12,7 @@
   ]);
 
   function ShowFunction(LineFactory, DelayFactory, $stateParams, $state, $scope, $interval){
-    console.log("in controller");
+    // console.log("in controller");
     var self=this;
     this.delays = [];
     DelayFactory.query({}, function(res){
@@ -58,7 +58,7 @@
     }
     this.getData()
     //SET THIS INTERVAL
-    $interval(this.getData, 5000);
+    $interval(this.getData, 10000);
 
     this.show = false;
     var counter = 0;

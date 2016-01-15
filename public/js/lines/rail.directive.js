@@ -21,9 +21,9 @@
         str: '@'
       },
       link: function(scope, elm){
-        console.log('In rail directive.')
+        // console.log('In rail directive.')
         scope.$watch("times.join('').hashCode()", function() {
-          console.log(scope.str)
+          // console.log(scope.str)
           setTimeout(function(){
             if (scope.str == "top"){
               $(".topTrain").remove()
@@ -67,9 +67,9 @@
         scope.Train.prototype.append = function(){
           this.$el.appendTo($("body"));
           if (this.status == "ARR" && scope.str=="top"){
-            this.$el.offset({top:this.y+30, left:this.x-this.offset});
+            this.$el.offset({top:this.y+15, left:this.x-this.offset});
           }else if (this.status == "BRD" && scope.str=="top"){
-            this.$el.offset({top:this.y+30, left:this.x-this.offset});
+            this.$el.offset({top:this.y+45, left:this.x-this.offset});
           }else if(scope.str=="top") {
             this.$el.offset({top:this.y+30, left:this.x-this.offset});
           }
@@ -89,12 +89,12 @@
           if (this.status == "ARR"  && scope.str=="top") {
             this.$el.animate({left: this.x}, 30000);
           } else if (scope.str=="top") {
-            this.$el.animate({left:this.x}, this.ms/2);
+            this.$el.animate({left:this.x}, 35000);
           }
           if (this.status == "ARR" && scope.str =="bot"){
             this.$el.animate({left: this.x}, 30000);
           }else if (scope.str=="bot"){
-            this.$el.animate({left:this.x}, this.ms/2);
+            this.$el.animate({left:this.x}, 35000);
           }
         }
         scope.Train.prototype.delete = function(){
@@ -132,12 +132,13 @@
                   var vTrain = new scope.Train($("#"+scope.str+(i+1)).offset(), scope.times[i]);
                   vTrain.getOffset();
                   vTrain.append();
-                  // vTrain.animate();
+                  vTrain.animate();
                 }
               }else if (scope.times[i+1] != "ARR" && scope.times[i+1] != "BRD" && parseInt(scope.times[i])-scope.convert(scope.times[i+1]) > 0) {
                 var cTrain = new scope.Train($("#"+scope.str+(i+1)).offset(), scope.times[i]);
                 cTrain.getOffset();
                 cTrain.append();
+                cTrain.animate();
               }
             }
           }else if (scope.str=="bot"){
@@ -159,13 +160,14 @@
                   var pTrain = new scope.Train($("#"+scope.str+(i-1)).offset(), scope.times[i]);
                   pTrain.getOffset();
                   pTrain.append();
-                  // vTrain.animate();
+                  pTrain.animate();
                 }
               }
               else if (scope.times[i-1] != "ARR" && scope.times[i-1] != "BRD" && parseInt(scope.times[i])-scope.convert(scope.times[i-1]) > 0) {
                 var yTrain = new scope.Train($("#"+scope.str+(i-  1)).offset(), scope.times[i]);
                 yTrain.getOffset();
                 yTrain.append();
+                yTrain.animate();
               }
             }
           }
