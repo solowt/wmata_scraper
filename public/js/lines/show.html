@@ -14,7 +14,7 @@
   </div>
   <div class="delayz">
     <h4>Information ({{LineShowViewModel.line.name}} Line):</h4>
-    Track Length: {{LineShowViewModel.trackInfo.totalDistance}} feet ({{LineShowViewModel.trackInfo.miles}} miles)<br>
+    Track Length: {{LineShowViewModel.trackInfo.totalDistance}} feet ({{LineShowViewModel.trackInfo.miles}} miles) ({{LineShowViewModel.trackInfo.numStations}} stops)<br>
     <div ng-show="LineShowViewModel.delays[0]"><ul data-ng-repeat="incident in LineShowViewModel.delays"><li class="wordwrap">{{incident.message}}</li></ul></div>
   </div>
 
@@ -30,7 +30,7 @@
 </h1>
 <div class="trackborder">
   <div class="centerdiv trackz">
-    <rail data-str="top"data-times="LineShowViewModel.timesOut" data-stations="LineShowViewModel.stations"></rail>
+    <rail data-str="top"data-times="LineShowViewModel.timesOut" data-stations="LineShowViewModel.stations" data-vm="LineShowViewModel"></rail>
   </div>
 </div>
 <div ng-click="showForm=true"class="centerdiv">
@@ -38,7 +38,7 @@
 </div>
 <div class="trackborder">
   <div class="centerdiv trackz">
-    <rail data-str="bot" data-times="LineShowViewModel.timesIn" data-stations="LineShowViewModel.stations"></rail>
+    <rail data-str="bot" data-times="LineShowViewModel.timesIn" data-stations="LineShowViewModel.stations" data-vm="LineShowViewModel"></rail>
   </div>
 </div>
 <h1 class="centertext">

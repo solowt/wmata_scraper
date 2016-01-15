@@ -12,7 +12,7 @@
   ]);
 
   function ShowFunction(LineFactory, DelayFactory, $stateParams, $state, $scope, $interval){
-    console.log("in controller");
+    // console.log("in controller");
     var self=this;
     this.delays = [];
     DelayFactory.query({}, function(res){
@@ -24,6 +24,7 @@
         }
       }
     });
+    helper.addHash();
     this.line = helper.staticLines[$stateParams.ln];
     this.trackInfo = {
       totalDistance: this.line.totalDist,
@@ -57,19 +58,19 @@
     }
     this.getData()
     //SET THIS INTERVAL
-    // $interval(this.getData, 10000);
+    $interval(this.getData, 10000);
 
     this.show = false;
     var counter = 0;
     this.showTimes = function(stop) {
       if (counter == 2){
         counter = 0;
-        $("#"+this.station2.name.split(' ').slice(0, 1)[0]).removeClass("highlight")
-        $("#"+this.station.name.split(' ').slice(0, 1)[0]).removeClass("highlight")
+        $("#"+this.station2.name.hashCode()).removeClass("highlight");
+        $("#"+this.station.name.hashCode()).removeClass("highlight");
       }
       if (counter==1){
         this.station2 = stop;
-        $("#"+this.station2.name.split(' ').slice(0, 1)[0]).addClass("highlight")
+        $("#"+this.station2.name.hashCode()).addClass("highlight");
         this.distance = 0;
         this.mins = 0;
         var index1 = this.station.sequence-1;
@@ -94,7 +95,7 @@
         counter++;
         this.station = stop;
         this.station2 = "";
-        $("#"+this.station.name.split(' ').slice(0, 1)[0]).addClass("highlight")
+        $("#"+this.station.name.hashCode()).addClass("highlight")
 
       }
     }

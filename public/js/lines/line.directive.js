@@ -24,7 +24,7 @@
         scope.sendData = function(stop) {
           scope.vm.showTimes(stop);
         }
-        console.log("In line directive.");
+        // console.log("In line directive.");
       }
     }
   }
