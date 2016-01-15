@@ -8,7 +8,7 @@
 *  Run `npm install`.
 *  Run `node index.js` / `nodemon`.
 *  Go to localhost:3000.
-*  You will need to supply [your own api key for wmata](https://developer.wmata.com/).  This should be set as either as a process variable `process.env.KEY` or in a js file called env exporting a js object like this  `{KEY: "your key here"}`.
+*  You will need to supply [your own api key for wmata](https://developer.wmata.com/).  This should be set as either as a process variable `process.env.KEY` or in a js file called env exporting a js object like this  `modules.exports = {KEY: "your key here"}`.
 
 ##How to Use
 
