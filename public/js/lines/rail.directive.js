@@ -15,24 +15,71 @@
       bindToController: true,
       restrict: "E",
       scope: {
+        vm: '=',
         times: '=',
         stations: '=',
         str: '@'
       },
       link: function(scope, elm){
-        scope.trainTemplate="<div class='trainwrapper'><div class='trainbody'><div class='car'></div><div class='link'></div><div class='car'></div><div class='link'></div><div class='car'></div></div></div>"
-        // $(scope.trainTemplate).appendTo($("body")) works
-        if(scope.str == "top"){
-          scope.direction = "→"
-        } else {
-          // console.log("ASASASSA")
-          scope.direction = "←"
+        console.log('In rail directive.')
+        scope.$watch("times.join('').hashCode()", function() {
+          setTimeout(function(){
+            $(".trainwrapper").remove()
+            scope.drawTrains()
+          },30)
+        });
+
+        scope.trains=[]
+
+        var self = scope;
+        scope.trainTemplate="<div class='trainwrapper'><div class='trainbody'><div class='car'></div><div class='link'></div><div class='car'></div><div class='link'></div><div class='car'></div><div class='link'></div><div class='car'></div></div></div>"
+        scope.Train = function(dest, status){
+          this.x = dest.left;
+          this.y = dest.top;
+          this.status = status;
+          if (this.status != "ARR" && this.status != "BRD"){
+            this.time = parseInt(this.status);
+            this.ms = this.time*60000;
+          }
+          this.$el = $(scope.trainTemplate);
+          this.offset = 0;
+          // self.trains.push(this);
         }
-        // console.log(scope.str)
+        scope.Train.prototype.getOffset = function(){
+          if (this.status == "BRD"){
+            this.offset = 0;
+          } else if (this.status == "ARR"){
+            this.offset = 30;
+          } else {
+            this.offset = 40;
+          }
+        }
+        scope.Train.prototype.append = function(){
+          this.$el.appendTo($("body"));
+          if (this.status == "ARR"){
+            this.$el.offset({top:this.y+30, left:this.x-this.offset});
+          }else if (this.status == "BRD"){
+            this.$el.offset({top:this.y+30, left:this.x-this.offset});
+          }else {
+            this.$el.offset({top:this.y+30, left:this.x-this.offset});
+          }
+        }
+        scope.Train.prototype.animate = function(){
+          // console.log(s);
+          if (this.status == "ARR") {
+            this.$el.animate({left: this.x}, 30000);
+          } else {
+            this.$el.animate({left:this.x}, this.ms/2)
+          }
+        }
+        scope.Train.prototype.delete = function(){
+          this.$el.remove();
+        }
+
         scope.convert = function(strCode){
           if (strCode == "BRD" || strCode == "ARR"){
             return 0;
-          } else if (strCode == "N/A" && scope.strCode=="top") { // return high number?
+          } else if (strCode == "N/A" && scope.strCode=="top") {
             return -1000;
           } else if (strCode == "N/A" && scope.strCode=="bot"){
             return 1000;
@@ -40,14 +87,34 @@
             return parseInt(strCode);
           }
         }
-        scope.drawTrains = function(index, str) {
-          if (str=="top" && scope.convert(scope.times[index])-scope.convert(scope.times[index+1]) >= 0){
-              $("#"+str+(index+1)).addClass("train");
-          } else if (str == "bot" && scope.convert(scope.times[index])-scope.convert(scope.times[index+1]) <= 0){
-              $("#"+str+(index)).addClass("train");
+        scope.drawTrains = function() {
+          for (var i = 0; i<scope.times.length; i++){
+
+            if (scope.str=="top" && scope.times[i] == "BRD" && $("#"+scope.str+(i)).offset()){
+              var aTrain = new scope.Train($("#"+scope.str+(i)).offset(), scope.times[i]);
+              aTrain.getOffset();
+              aTrain.append();
+
+            }else if (scope.str=="top" && scope.times[i] == "ARR" && $("#"+scope.str+(i)).offset()){
+              var bTrain = new scope.Train($("#"+scope.str+(i)).offset(), scope.times[i]);
+              bTrain.getOffset();
+              bTrain.append();
+              bTrain.animate();
+
+            }else if(scope.str=="top" && scope.times[i]=="N/A" && scope.times[i]!="BRD" && scope.times[i]!="ARR"){
+              if (scope.times[i+1] != "BRD" && scope.times[i+1] != "ARR" && parseInt(scope.times[i+1]) <=3){
+                var vTrain = new scope.Train($("#"+scope.str+(i+1)).offset(), scope.times[i]);
+                vTrain.getOffset();
+                vTrain.append();
+                // vTrain.animsate();
+              }
+            }else if (scope.str=="top" && scope.times[i+1] != "ARR" && parseInt(scope.times[i])-scope.convert(scope.times[i+1]) > 0) {
+              var cTrain = new scope.Train($("#"+scope.str+(i+1)).offset(), scope.times[i]);
+              cTrain.getOffset();
+              cTrain.append();
+            }
           }
         }
-        console.log("In rail directive.");
       }
     }
   }

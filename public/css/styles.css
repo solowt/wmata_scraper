@@ -41,7 +41,7 @@ li a {
 .trainwrapper{
   position: absolute;
   left: 400px;
-  top:400px;
+  top:460px;
 }
 
 .trainbody{
@@ -54,7 +54,7 @@ li a {
 }
 .car{
   height: 10px;
-  width: 20px;
+  width: 10px;
   background-color: black
 
 }
@@ -62,7 +62,7 @@ li a {
   position: absolute;
   height: 4px;
   top: 3px;
-  width: 6px;
+  width: 3px;
   background-color: grey;
 }
 img {
