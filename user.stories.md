@@ -8,11 +8,11 @@
 
 These Show my planning process and will probably be unintelligible to you:
 
-![planpic](/plan-pics/1.jpg)
-![planpic](/plan-pics/2.jpg)
-![planpic](/plan-pics/3.jpg)
-![planpic](/plan-pics/4.jpg)
-![planpic](/plan-pics/5.jpg)
-![planpic](/plan-pics/6.jpg)
-![planpic](/plan-pics/7.jpg)
-![planpic](/plan-pics/8.jpg)
+![planpic](solowt.githup.io/assets/plan-pics/1.jpg)
+![planpic](solowt.githup.io/assets/plan-pics/2.jpg)
+![planpic](solowt.githup.io/assets/plan-pics/3.jpg)
+![planpic](solowt.githup.io/assets/plan-pics/4.jpg)
+![planpic](solowt.githup.io/assets/plan-pics/5.jpg)
+![planpic](solowt.githup.io/assets/plan-pics/6.jpg)
+![planpic](solowt.githup.io/assets/plan-pics/7.jpg)
+![planpic](solowt.githup.io/assets/plan-pics/8.jpg)
