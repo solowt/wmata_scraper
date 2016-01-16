@@ -1,6 +1,6 @@
 <div>
   <div class="contained" ng-repeat="station in line.stations">
-    <div ng-click="sendData(station)" id="{{station.name.hashCode()}}"class="station {{station.line}}">
+    <div ng-click="sendData(station)" ng-class="{highlight: $index==index1 || $index ==index2}" id="{{station.name.hashCode()}}" class="station {{station.line}}">
       <div class="stationinfo2">
         {{station.trainsOut[0].status || "N/A"}}
       </div>

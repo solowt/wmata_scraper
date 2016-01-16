@@ -13,32 +13,39 @@
 
   function ShowFunction(LineFactory, DelayFactory, $stateParams, $state, $scope, $interval){
     console.log("in controller");
+    helper.addHash();
     var self=this;
     this.delays = [];
-    DelayFactory.query({}, function(res){
-      for (var j=0; j<res.length; j++){
-        for (var k=0; k<res[j].lines.length; k++){
-          if ($stateParams.ln == res[j].lines[k]){
-            self.delays.push(res[j]);
-          }
-        }
-      }
-    });
-    helper.addHash();
-    this.line = helper.staticLines[$stateParams.ln];
-    this.trackInfo = {
-      totalDistance: this.line.totalDist,
-      miles: (this.line.totalDist/5280).toFixed(2),
-      numStations: this.line.numStations
-      }
     this.initArrays = function() {
       self.timesIn = [];
       self.timesOut = [];
       self.stations = [];
     }
     this.initArrays()
+    this.line = helper.staticLines[$stateParams.ln];
+
+    this.trackInfo = {
+      totalDistance: this.line.totalDist,
+      miles: (this.line.totalDist/5280).toFixed(2),
+      numStations: this.line.numStations
+    }
+
+    this.getDelays = function() {
+      DelayFactory.query({}, function(res){
+        for (var j=0; j<res.length; j++){
+          for (var k=0; k<res[j].lines.length; k++){
+            if ($stateParams.ln == res[j].lines[k]){
+              self.delays.push(res[j]);
+            }
+          }
+        }
+      });
+    }
+
+
     this.getData = function() {
-      self.initArrays()
+      self.getDelays();
+      self.initArrays();
       LineFactory.get({ln: $stateParams.ln}, function(res){
         self.line.stations = res.stations;
         for (var i=0; i<self.line.stations.length; i++){
@@ -56,21 +63,26 @@
         }
       });
     }
+
     this.getData()
-    //SET THIS INTERVAL
     $interval(this.getData, 10000);
 
     this.show = false;
-    var counter = 0;
+    this.counter = 0;
+    this.index1;
+    this.index2;
     this.showTimes = function(stop) {
-      if (counter == 2){
-        counter = 0;
+      if (self.counter == 2){
+        self.counter = 0;
         $("#"+self.station2.name.hashCode()).removeClass("highlight");
         $("#"+self.station.name.hashCode()).removeClass("highlight");
+        self.index1 = null;
+        self.index2 = null;
       }
-      if (counter==1){
+      if (self.counter==1){
         self.station2 = stop;
         $("#"+self.station2.name.hashCode()).addClass("highlight");
+        self.index2 = this.line.stations.indexOf(self.station2);
         this.distance = 0;
         this.mins = 0;
         var index1 = self.station.sequence-1;
@@ -89,13 +101,14 @@
           console.log("Same station selected.")
         }
         this.distance = (this.distance/5280).toFixed(2);
-        counter++;
+        self.counter++;
         // this.show= true;
-      }else if (counter==0){
-        counter++;
+      }else if (self.counter==0){
+        self.counter++;
         self.station = stop;
         self.station2 = "";
         $("#"+self.station.name.hashCode()).addClass("highlight")
+        self.index1 = this.line.stations.indexOf(self.station);
 
       }
     }
