@@ -6,4 +6,13 @@
 
 ##Images
 
-These Show my planning process and will probably be unintelligible to you: 
+These Show my planning process and will probably be unintelligible to you:
+
+![planpic](/plan-pics/1.jpg)
+![planpic](/plan-pics/2.jpg)
+![planpic](/plan-pics/3.jpg)
+![planpic](/plan-pics/4.jpg)
+![planpic](/plan-pics/5.jpg)
+![planpic](/plan-pics/6.jpg)
+![planpic](/plan-pics/7.jpg)
+![planpic](/plan-pics/8.jpg)
