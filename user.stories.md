@@ -8,7 +8,7 @@
 
 These Show my planning process and will probably be unintelligible to you:
 
-![planpic](solowt.githup.io/assets/plan-pics/1.jpg)
+![planpic](http://solowt.githup.io/assets/plan-pics/1.jpg)
 ![planpic](solowt.githup.io/assets/plan-pics/2.jpg)
 ![planpic](solowt.githup.io/assets/plan-pics/3.jpg)
 ![planpic](solowt.githup.io/assets/plan-pics/4.jpg)
