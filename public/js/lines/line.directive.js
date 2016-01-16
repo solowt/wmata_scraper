@@ -20,11 +20,19 @@
         // $scope: '='
       },
       link: function(scope){
-        // scope.line = scope.vm.line;
+        scope.$watch("line.stations", function(){
+          setTimeout(function(){
+            if (scope.vm.station2){
+              $("#"+scope.vm.station2.name.hashCode()).addClass("highlight");
+            }
+            if (scope.vm.station){
+              $("#"+scope.vm.station.name.hashCode()).addClass("highlight");
+            }
+          }, 50)
+        });
         scope.sendData = function(stop) {
           scope.vm.showTimes(stop);
         }
-        // console.log("In line directive.");
       }
     }
   }

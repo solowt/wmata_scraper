@@ -12,7 +12,7 @@
   ]);
 
   function ShowFunction(LineFactory, DelayFactory, $stateParams, $state, $scope, $interval){
-    // console.log("in controller");
+    console.log("in controller");
     var self=this;
     this.delays = [];
     DelayFactory.query({}, function(res){
@@ -65,25 +65,25 @@
     this.showTimes = function(stop) {
       if (counter == 2){
         counter = 0;
-        $("#"+this.station2.name.hashCode()).removeClass("highlight");
-        $("#"+this.station.name.hashCode()).removeClass("highlight");
+        $("#"+self.station2.name.hashCode()).removeClass("highlight");
+        $("#"+self.station.name.hashCode()).removeClass("highlight");
       }
       if (counter==1){
-        this.station2 = stop;
-        $("#"+this.station2.name.hashCode()).addClass("highlight");
+        self.station2 = stop;
+        $("#"+self.station2.name.hashCode()).addClass("highlight");
         this.distance = 0;
         this.mins = 0;
-        var index1 = this.station.sequence-1;
-        var index2 = this.station2.sequence-1;
+        var index1 = self.station.sequence-1;
+        var index2 = self.station2.sequence-1;
         if (index2>index1){
           for (var j=index2; j>index1; j--){
-            this.distance+=this.line.stations[j].distPrev;
-            this.mins+=this.line.stations[j].timePrev;
+            this.distance+=self.line.stations[j].distPrev;
+            this.mins+=self.line.stations[j].timePrev;
           }
         } else if (index1>index2) {
           for (var j=index1; j>index2; j--){
-            this.distance+=this.line.stations[j].distPrev;
-            this.mins+=this.line.stations[j].timePrev;
+            this.distance+=self.line.stations[j].distPrev;
+            this.mins+=self.line.stations[j].timePrev;
           }
         } else {
           console.log("Same station selected.")
@@ -93,9 +93,9 @@
         // this.show= true;
       }else if (counter==0){
         counter++;
-        this.station = stop;
-        this.station2 = "";
-        $("#"+this.station.name.hashCode()).addClass("highlight")
+        self.station = stop;
+        self.station2 = "";
+        $("#"+self.station.name.hashCode()).addClass("highlight")
 
       }
     }
