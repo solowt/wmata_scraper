@@ -30,7 +30,9 @@
             } else if (scope.str =="bot"){
               $(".botTrain").remove()
             }
-            scope.drawTrains()
+            if (scope.times){
+              scope.drawTrains();              
+            }
           },30)
         });
 

@@ -12,7 +12,7 @@
       </div>
     </div>
   </div>
-  <div class="delayz">
+  <div class="delayz scroll">
     <h4>Information ({{LineShowViewModel.line.name}} Line):</h4>
     Track Length: {{LineShowViewModel.trackInfo.totalDistance}} feet ({{LineShowViewModel.trackInfo.miles}} miles) ({{LineShowViewModel.trackInfo.numStations}} stops)<br>
     <div ng-show="LineShowViewModel.delays[0]"><ul data-ng-repeat="incident in LineShowViewModel.delays"><li class="wordwrap">{{incident.message}}</li></ul></div>
