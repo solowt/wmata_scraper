@@ -9,10 +9,10 @@
 These Show my planning process and will probably be unintelligible to you:
 
 ![planpic](http://solowt.githup.io/assets/plan-pics/1.jpg)
-![planpic](/solowt.githup.io/assets/plan-pics/2.jpg)
-![planpic](/solowt.githup.io/assets/plan-pics/3.jpg)
-![planpic](solowt.githup.io/assets/plan-pics/4.jpg)
-![planpic](solowt.githup.io/assets/plan-pics/5.jpg)
-![planpic](solowt.githup.io/assets/plan-pics/6.jpg)
-![planpic](solowt.githup.io/assets/plan-pics/7.jpg)
-![planpic](http://dreamatico.com/data_images/sea/sea-7.jpg)
+![planpic](http://solowt.github.io/assets/plan-pics/2.jpg)
+![planpic](http://solowt.github.io/assets/plan-pics/3.jpg)
+![planpic](http://solowt.github.io/assets/plan-pics/5.jpg)
+![planpic](http://solowt.github.io/assets/plan-pics/6.jpg)
+![planpic](http://solowt.github.io/assets/plan-pics/7.jpg)
+![planpic](http://solowt.github.io/assets/plan-pics/8.jpg)
+![planpic](http://solowt.github.io/assets/plan-pics/4.jpg)
