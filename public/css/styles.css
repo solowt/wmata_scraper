@@ -19,6 +19,12 @@ ul, li {
   list-style: none;
   display: inline-block;
 }
+
+footer{
+  height:50px;
+  margin-top:3em;
+}
+
 .nav ul{
   list-style-type: none;
   margin: 0;
