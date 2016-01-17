@@ -31,6 +31,9 @@
     }
 
     this.getDelays = function() {
+      if ($(".delayli").html()){
+        $(".delayli").html("");
+      }
       DelayFactory.query({}, function(res){
         for (var j=0; j<res.length; j++){
           for (var k=0; k<res[j].lines.length; k++){
