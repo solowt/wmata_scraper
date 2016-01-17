@@ -13,7 +13,7 @@ app.set('port', (process.env.PORT || 3000));
 
 app.use(express.static(__dirname + '/public'));
 
-app.get('/lines/:code', cors(), function(req, res){
+app.get('/lines/:code', function(req, res){
   var line = lineObject[req.params.code];
   line.getTrains().then(function(l){
     console.log("Got all Trains for "+req.params.code+" line.")
@@ -21,14 +21,14 @@ app.get('/lines/:code', cors(), function(req, res){
   });
 });
 
-app.get('/lines', cors(), function(req, res){
+app.get('/lines', function(req, res){
   functionLib.getTrainsWrapper(lineObject).then(function(o){
     console.log("Got all Trains per each line.")
     res.json(o);
   });
 });
 
-app.get('/incidents', cors(), function(req, res){
+app.get('/incidents', function(req, res){
   functionLib.getIncidents().then(function(resp){
     res.json(resp);
   });
