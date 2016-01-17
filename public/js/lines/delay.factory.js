@@ -9,6 +9,6 @@
   ]);
 
   function DelayFactoryFunction($resource){
-    return $resource("https://infinite-spire-8251.herokuapp.com/incidents", {});
+    return $resource("localhost:3000/incidents", {});
   }
 }());
