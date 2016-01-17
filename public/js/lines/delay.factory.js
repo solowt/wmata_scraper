@@ -9,6 +9,6 @@
   ]);
 
   function DelayFactoryFunction($resource){
-    return $resource("localhost:3000/incidents", {});
+    return $resource("http://localhost:3000/incidents", {});
   }
 }());
