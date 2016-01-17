@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="timetable" ng-show="showForm">
+  <div class="timetable scroll" ng-show="showForm">
     <div><h4>Arriving at {{LineShowViewModel.station.name}}:</h4>
       <div data-ng-repeat="stop in LineShowViewModel.station.trainsIn">
         ←Destination: {{stop.dest}} | ETA: {{stop.status}} | Cars: {{stop.numCars}}
@@ -15,7 +15,7 @@
   <div class="delayz scroll">
     <h4>Information ({{LineShowViewModel.line.name}} Line):</h4>
     Track Length: {{LineShowViewModel.trackInfo.totalDistance}} feet ({{LineShowViewModel.trackInfo.miles}} miles) ({{LineShowViewModel.trackInfo.numStations}} stops)<br>
-    <div ng-show="LineShowViewModel.delays[0]"><ul data-ng-repeat="incident in LineShowViewModel.delays"><li class="wordwrap">{{incident.message}}</li></ul></div>
+    <div ng-show="LineShowViewModel.delays[0]"><ul data-ng-repeat="incident in LineShowViewModel.delays"><li class="wordwrap delayli">{{incident.message}}</li></ul></div>
   </div>
 
   <div ng-show="showForm"class="info">
@@ -34,7 +34,7 @@
   </div>
 </div>
 <div ng-click="showForm=true"class="centerdiv">
-  <line data-line="LineShowViewModel.line" data-vm="LineShowViewModel"></station>
+  <line data-index1="LineShowViewModel.index1" data-index2="LineShowViewModel.index2" data-line="LineShowViewModel.line" data-vm="LineShowViewModel"></station>
 </div>
 <div class="trackborder">
   <div class="centerdiv trackz">

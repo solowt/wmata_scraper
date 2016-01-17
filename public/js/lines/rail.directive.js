@@ -12,7 +12,6 @@
       templateUrl: "js/lines/rail.html",
       replace: true,
       // controller: "LineShowController",
-      bindToController: true,
       restrict: "E",
       scope: {
         vm: '=',
@@ -31,7 +30,7 @@
               $(".botTrain").remove()
             }
             if (scope.times){
-              scope.drawTrains();              
+              scope.drawTrains();
             }
           },30)
         });
