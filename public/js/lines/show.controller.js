@@ -31,9 +31,6 @@
     }
 
     this.getDelays = function() {
-      if ($(".delayli").html()){
-        $(".delayli").html("");
-      }
       DelayFactory.query({}, function(res){
         for (var j=0; j<res.length; j++){
           for (var k=0; k<res[j].lines.length; k++){
@@ -46,8 +43,8 @@
     }
 
 
+    self.getDelays();
     this.getData = function() {
-      self.getDelays();
       self.initArrays();
       LineFactory.get({ln: $stateParams.ln}, function(res){
         self.line.stations = res.stations;
