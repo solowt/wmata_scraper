@@ -21,8 +21,7 @@
       },
       link: function(scope, elm){
         // console.log('In rail directive.')
-        scope.$watch("times.join('').hashCode()", function() {
-          // console.log(scope.str)
+        scope.$watchCollection("times", function() {
           setTimeout(function(){
             if (scope.str == "top"){
               $(".topTrain").remove()
