@@ -21,17 +21,17 @@
       },
       link: function(scope, elm){
         // console.log('In rail directive.')
-        scope.$watchCollection("times", function() {
-          setTimeout(function(){
-            if (scope.str == "top"){
-              $(".topTrain").remove()
-            } else if (scope.str =="bot"){
-              $(".botTrain").remove()
-            }
-            if (scope.times){
-              scope.drawTrains();
-            }
-          },30)
+        scope.$watchCollection("times", function(newVal, oldVal) {
+          if (newVal.length > 0){
+            setTimeout(function(){
+              if (scope.str == "top"){
+                $(".topTrain").remove()
+              } else if (scope.str =="bot"){
+                $(".botTrain").remove()
+              }
+                scope.drawTrains();
+            },30)
+          }
         });
 
         scope.trains=[]
