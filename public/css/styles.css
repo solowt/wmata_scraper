@@ -51,6 +51,8 @@ li a {
   position: absolute;
   left: 400px;
   top:460px;
+  width: 49px;
+  height: 19px;
 }
 
 .trainbody{
