@@ -29,7 +29,6 @@
               } else if (scope.str =="bot"){
                 $(".botTrain").remove()
               }
-              console.log("drawing trains lol")
                 scope.drawTrains();
             },30)
           }
