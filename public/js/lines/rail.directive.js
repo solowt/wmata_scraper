@@ -29,6 +29,7 @@
               } else if (scope.str =="bot"){
                 $(".botTrain").remove()
               }
+              console.log("drawing trains lol")
                 scope.drawTrains();
             },30)
           }
@@ -66,7 +67,6 @@
         }
         scope.Train.prototype.append = function(){
           if (scope.str == "top"){
-            console.log("asasa");
             this.$el.appendTo($(".trackborder")[0]);
             if (this.status == "ARR"){
               this.$el.offset({top:this.y+30, left:this.x-this.offset});
