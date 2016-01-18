@@ -65,15 +65,18 @@
           }
         }
         scope.Train.prototype.append = function(){
-          this.$el.appendTo($("body"));
-          if (this.status == "ARR" && scope.str=="top"){
-            this.$el.offset({top:this.y+30, left:this.x-this.offset});
-          }else if (this.status == "BRD" && scope.str=="top"){
-            this.$el.offset({top:this.y+45, left:this.x-this.offset});
-          }else if(scope.str=="top") {
-            this.$el.offset({top:this.y+15, left:this.x-this.offset});
-          }
-          if (scope.str == "bot"){
+          if (scope.str == "top"){
+            console.log("asasa");
+            this.$el.appendTo($(".trackborder")[0]);
+            if (this.status == "ARR"){
+              this.$el.offset({top:this.y+30, left:this.x-this.offset});
+            }else if (this.status == "BRD"){
+              this.$el.offset({top:this.y+45, left:this.x-this.offset});
+            }else if(scope.str=="top") {
+              this.$el.offset({top:this.y+15, left:this.x-this.offset});
+            }
+          }else if (scope.str == "bot"){
+            this.$el.appendTo($(".trackborder")[1]);
             if (this.status == "ARR"){
               this.$el.offset({top:this.y+30, left:this.x+this.offset});
             }else if (this.status == "BRD"){
