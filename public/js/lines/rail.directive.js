@@ -21,18 +21,17 @@
       },
       link: function(scope, elm){
         // console.log('In rail directive.')
-        scope.$watch("times.join('').hashCode()", function() {
-          // console.log(scope.str)
-          setTimeout(function(){
-            if (scope.str == "top"){
-              $(".topTrain").remove()
-            } else if (scope.str =="bot"){
-              $(".botTrain").remove()
-            }
-            if (scope.times){
-              scope.drawTrains();
-            }
-          },30)
+        scope.$watchCollection("times", function(newVal, oldVal) {
+          if (newVal.length > 0){
+            setTimeout(function(){
+              if (scope.str == "top"){
+                $(".topTrain").remove()
+              } else if (scope.str =="bot"){
+                $(".botTrain").remove()
+              }
+                scope.drawTrains();
+            },30)
+          }
         });
 
         scope.trains=[]
@@ -68,19 +67,19 @@
         scope.Train.prototype.append = function(){
           this.$el.appendTo($("body"));
           if (this.status == "ARR" && scope.str=="top"){
-            this.$el.offset({top:this.y+15, left:this.x-this.offset});
+            this.$el.offset({top:this.y+30, left:this.x-this.offset});
           }else if (this.status == "BRD" && scope.str=="top"){
             this.$el.offset({top:this.y+45, left:this.x-this.offset});
           }else if(scope.str=="top") {
-            this.$el.offset({top:this.y+30, left:this.x-this.offset});
+            this.$el.offset({top:this.y+15, left:this.x-this.offset});
           }
           if (scope.str == "bot"){
             if (this.status == "ARR"){
               this.$el.offset({top:this.y+30, left:this.x+this.offset});
             }else if (this.status == "BRD"){
-              this.$el.offset({top:this.y+30, left:this.x+this.offset});
+              this.$el.offset({top:this.y+15, left:this.x+this.offset});
             }else{
-              this.$el.offset({top:this.y+30, left:this.x+this.offset});
+              this.$el.offset({top:this.y+45, left:this.x+this.offset});
 
             }
           }
