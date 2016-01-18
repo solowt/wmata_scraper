@@ -48,7 +48,7 @@ li a {
   text-decoration: none;
 }
 .trainwrapper{
-  /*position: absolute;*/
+  position: absolute;
   left: 400px;
   top:460px;
 }
