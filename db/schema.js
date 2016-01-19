@@ -190,6 +190,7 @@ LineSchema.methods.clearTrains = function() {
   }
 }
 
+// get all trains on one line
 LineSchema.methods.getTrains = function(){
   this.clearTrains();
   var self = this;
@@ -208,14 +209,11 @@ LineSchema.methods.getTrains = function(){
           for (var i=0;i < resJSON.Trains.length; i++){
             if (functionLib.validTrain(resJSON.Trains[i])) {
               var locationCode = resJSON.Trains[i].LocationCode;
-              var lineCode = resJSON.Trains[i].Line;
-              if (lineCode == self.name) {
-                var newTrain = new Train(functionLib.constructTrainData(resJSON.Trains[i]));
-                if (newTrain.direction == "2"){
-                  self.stations.find(functionLib.findStations.bind({loc:locationCode})).trainsOut.push(newTrain);
-                } else if (newTrain.direction == "1"){
-                  self.stations.find(functionLib.findStations.bind({loc:locationCode})).trainsIn.push(newTrain);
-                }
+              var newTrain = new Train(functionLib.constructTrainData(resJSON.Trains[i]));
+              if (newTrain.direction == "2"){
+                self.stations.find(functionLib.findStations.bind({loc:locationCode})).trainsOut.push(newTrain);
+              } else if (newTrain.direction == "1"){
+                self.stations.find(functionLib.findStations.bind({loc:locationCode})).trainsIn.push(newTrain);
               }
             }
           }
