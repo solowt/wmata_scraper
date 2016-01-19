@@ -11,7 +11,6 @@
     return {
       templateUrl: "js/lines/rail.html",
       replace: true,
-      // controller: "LineShowController",
       restrict: "E",
       scope: {
         vm: '=',
@@ -25,11 +24,12 @@
           if (newVal.length > 0){
             setTimeout(function(){
               if (scope.str == "top"){
-                $(".topTrain").remove()
+                $(".topTrain").remove();
               } else if (scope.str =="bot"){
-                $(".botTrain").remove()
+                $(".botTrain").remove();
               }
-                scope.drawTrains();
+              console.log(scope.stations)
+              scope.drawTrains();
             },30)
           }
         });

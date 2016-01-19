@@ -55,6 +55,6 @@ I spent a lot of time thinking about how to determine where trains are on a line
 *  General code cleanup, remove redundant/useless code/variables (there are a lot).
 *  Add mouseover on trains to show their ETA and destination (redundant but cool).
 *  Look into fringe cases with bad data from wmata.  Have to think about whether or not it's worth the effort to try and correct some of their obviously incorrect data.
-*  Look into rendering multiple trains between two given stations. May have to wait until OO approach has been achieved and use an array of arrays to hold trains.
+*  Look into rendering multiple trains between two given stations.
 
 See `user.stories.md` for more information about development.
