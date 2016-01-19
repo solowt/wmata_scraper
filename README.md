@@ -50,15 +50,15 @@ Finally, I didn't deal with the fact that many tracks in the Metro are shared be
 
 ##To-do List:
 
-*  Check for cause of ng-repeat duplicate errors when requests take a long time to repeat (may have fixed this already).
-*  Persist a trains array for each rail and push/pop trains based on the data updates.  This will prevent trains "flickering."
-*  Combine shared rails across different lines (Look at back end `getTrains` method, perhaps remove one if check).
+*  Check for cause of ng-repeat duplicate errors when requests take a long time to repeat. -This may have to do with a bad connection?
+*  Persist a trains array for each rail and push/pop trains based on the data updates.  This will prevent trains "flickering." -Solved flickering
+*  Combine shared rails across different lines (Look at back end `getTrains` method, perhaps remove one if check). -Solved this
 *  Consider adding websockets to check for data changes before getting update.  Add to back-end first to check if this is doable with wmata's api.
-*  Stop flickering highlighted stations when data refreshes.  One solution is to add an `ng-class if` statement in the line directive, adding the highlight class only if the hashed station name strings match.  However, the line directive really shouldn't be refreshing at all.  Maybe reorganize how data is updated to solve this: do I really need to added new updates to the `this.line` object in the show controller?  What about passing data in differently?  Or as a quick fix: what about having two line objects, one that gets updated and one that doesn't?  This would be redundant but would work.
+*  Stop flickering highlighted stations when data refreshes.  -Solved this with `ng-class if`
 *  General code cleanup, remove redundant/useless code/variables (there are a lot).
 *  Add mouseover on trains to show their ETA and destination (redundant but cool).
-*  Check for "ARR" - "ARR" pattern on bottom rail.  Possible bug here.
+*  Check for "ARR" - "ARR" pattern on bottom rail.  Possible bug here.  -No bug here
 *  Look into fringe cases with bad data from wmata.  Have to think about whether or not it's worth the effort to try and correct some of their obviously incorrect data.
-*  Look into rendering multiple between two given stations.  How? Change times to a two-dimensional array with each element being a sub array with 2-3 length.  Not too hard, but low priority as this mostly doesn't happen.  Also have to adjust train size/position to avoid collisions if I do this.   
+*  Look into rendering multiple between two given stations.  How? Change times to a two-dimensional array with each element being a sub array with 2-3 length.  -On back-burner for now
 
 See `user.stories.md` for more information about development.
