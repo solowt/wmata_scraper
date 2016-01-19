@@ -12,7 +12,7 @@
   ]);
 
   function ShowFunction(LineFactory, DelayFactory, $stateParams, $state, $scope, $interval){
-    console.log("in controller");
+
     helper.addHash();
     var self=this;
     this.delays = [];
@@ -65,7 +65,11 @@
     }
 
     this.getData()
-    $interval(this.getData, 10000);
+    this.intervalID = $interval(this.getData, 10000);
+
+    $scope.$on('$destroy', function () {
+      $interval.cancel(this.intervalID);
+     });
 
     this.show = false;
     this.counter = 0;
