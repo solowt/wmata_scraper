@@ -28,7 +28,7 @@ app.get('/lines', cors(), function(req, res){
   });
 });
 
-app.get('/incidents', cors(), function(req, res){
+app.get('/incidents', cors(), gfunction(req, res){
   functionLib.getIncidents().then(function(resp){
     res.json(resp);
   });
