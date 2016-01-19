@@ -2,7 +2,7 @@
 
 ![Image of Trains](appdone.png)
 
-##[Hosted on Heroku](https://infinite-spire-8251.herokuapp.com/)
+##[Hosted on Heroku](https://dc-trains.herokuapp.com/)
 
 ##Installation:
 
