@@ -46,19 +46,15 @@ One aspect of the project that isn't visible on the surface is how much effort w
 
 I spent a lot of time thinking about how to determine where trains are on a line, and how to render them.  The method that I ended up using isn't perfect.  What I hoped to do was keep a trains array for each line and update it when the data updates.  However, I didn't have enough time to implement this (hopefully later!) so I ended up removing and re-rendering trains after each update.
 
-Finally, I didn't deal with the fact that many tracks in the Metro are shared between lines.  I anticipated this issue early in the project, but I didn't get around to accounting for it.  As is, each line is handled separately so you won't see blue line trains on the yellow line, even if they share a track.
 
 ##To-do List:
 
-*  Check for cause of ng-repeat duplicate errors when requests take a long time to repeat (may have fixed this already).
-*  Persist a trains array for each rail and push/pop trains based on the data updates.  This will prevent trains "flickering."
-*  Combine shared rails across different lines (Look at back end `getTrains` method, perhaps remove one if check).
+*  Check for cause of ng-repeat duplicate errors when requests take a long time to repeat.  Note: this doesn't cause crashes.  May have to do with poor internet/two responses getting there at once.  Can check with prints, probably.
+*  Persist a trains array for each rail and push/pop trains based on the data updates.
 *  Consider adding websockets to check for data changes before getting update.  Add to back-end first to check if this is doable with wmata's api.
-*  Stop flickering highlighted stations when data refreshes.  One solution is to add an `ng-class if` statement in the line directive, adding the highlight class only if the hashed station name strings match.  However, the line directive really shouldn't be refreshing at all.  Maybe reorganize how data is updated to solve this: do I really need to added new updates to the `this.line` object in the show controller?  What about passing data in differently?  Or as a quick fix: what about having two line objects, one that gets updated and one that doesn't?  This would be redundant but would work.
 *  General code cleanup, remove redundant/useless code/variables (there are a lot).
 *  Add mouseover on trains to show their ETA and destination (redundant but cool).
-*  Check for "ARR" - "ARR" pattern on bottom rail.  Possible bug here.
 *  Look into fringe cases with bad data from wmata.  Have to think about whether or not it's worth the effort to try and correct some of their obviously incorrect data.
-*  Look into rendering multiple between two given stations.  How? Change times to a two-dimensional array with each element being a sub array with 2-3 length.  Not too hard, but low priority as this mostly doesn't happen.  Also have to adjust train size/position to avoid collisions if I do this.   
+*  Look into rendering multiple trains between two given stations. May have to wait until OO approach has been achieved and use an array of arrays to hold trains.
 
 See `user.stories.md` for more information about development.
