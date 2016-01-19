@@ -68,7 +68,7 @@
     this.intervalID = $interval(this.getData, 10000);
 
     $scope.$on('$destroy', function () {
-      $interval.cancel(this.intervalID);
+      $interval.cancel(self.intervalID);
      });
 
     this.show = false;
