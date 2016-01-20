@@ -1,9 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 
-
-setInterval(function(){console.log("hi")}, 300)
-
 var Line = require('./models/line.js');
 var functionLib = require('./function_lib/functions.js')
 var lineObject = require('./structer.js')
@@ -14,20 +11,29 @@ app.set('port', (process.env.PORT || 3000));
 
 app.use(express.static(__dirname + '/public'));
 
-app.get('/lines/:code', cors(), function(req, res){
-  var line = lineObject[req.params.code];
-  line.getTrains().then(function(l){
-    console.log("Got all Trains for "+req.params.code+" line.")
-    res.json(l)
+
+// wrap this in middleware...
+setInterval(function(){
+  functionLib.getTrainsWrapper(lineObject).then(function(o){
+    console.log("Got trains for each line!")
   });
+}, 15000);
+
+app.get('/lines/:code', cors(), function(req, res){
+  // var line = lineObject[req.params.code];
+  // line.getTrains().then(function(l){
+  //   console.log("Got all Trains for "+req.params.code+" line.")
+  //   res.json(l)
+  res.json(lineObject[req.params.code]);
+  // });
 });
 
-app.get('/lines', cors(), function(req, res){
-  functionLib.getTrainsWrapper(lineObject).then(function(o){
-    console.log("Got all Trains per each line.")
-    res.json(o);
-  });
-});
+// app.get('/lines', cors(), function(req, res){
+//   functionLib.getTrainsWrapper(lineObject).then(function(o){
+//     console.log("Got all Trains per each line.")
+//     res.json(o);
+//   });
+// });
 
 app.get('/incidents', cors(), function(req, res){
   functionLib.getIncidents().then(function(resp){
