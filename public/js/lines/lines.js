@@ -3,6 +3,13 @@
 (function(){
   angular
   .module("lines", [
-    "ngResource"
-  ]);
+    "ngResource",
+    "btford.socket-io"
+  ])
+  .factory('mySocket', function(socketFactory){
+    var mySocket = socketFactory();
+    mySocket.forward('line');
+    mySocket.forward('incidents');
+    return mySocket;
+  })
 })();
