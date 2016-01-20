@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 
 
+setInterval(function(){console.log("hi")}, 300)
 
 var Line = require('./models/line.js');
 var functionLib = require('./function_lib/functions.js')

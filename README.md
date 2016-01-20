@@ -49,6 +49,7 @@ I spent a lot of time thinking about how to determine where trains are on a line
 
 ##To-do List:
 
+*  Currently we do an API call to wmata each time the user visits a URL.  The better way to do this is put a setInterval on the back end to redefine the current state of all lines and respond with that.
 *  Check for cause of ng-repeat duplicate errors when requests take a long time to repeat.  Note: this doesn't cause crashes.  May have to do with poor internet/two responses getting there at once.  Can check with prints, probably.
 *  Persist a trains array for each rail and push/pop trains based on the data updates.
 *  Consider adding websockets to check for data changes before getting update.  Add to back-end first to check if this is doable with wmata's api.
