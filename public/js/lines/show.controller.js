@@ -11,7 +11,14 @@
   ]);
 
   function ShowFunction($stateParams, $state, $scope, $interval, mySocket){
-    mySocket.emit("getLines");
+    mySocket.emit("getTrains");
+    $scope.$on('socket:incidents', function(ev, data){
+      self.getDelays(data);
+    });
+    $scope.$on('socket:line', function (ev, data) {
+      console.log("Got new train data");
+      self.getData(data);
+    });
     helper.addHash();
     var self=this;
     this.delays = [];
@@ -60,12 +67,6 @@
       }
     }
 
-    $scope.$on('socket:incidents', function(ev, data){
-      self.getDelays(data);
-    });
-    $scope.$on('socket:line', function (ev, data) {
-      self.getData(data);
-    });
 
     $scope.$on('$destroy', function () {
     });

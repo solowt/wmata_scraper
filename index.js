@@ -15,7 +15,6 @@ app.use(express.static(__dirname + '/public'));
 
 var lineObject = require('./structer.js')
 var incidents = [];
-console.log("AAAA")
 
 intervalID = setInterval(function(){
   functionLib.getAllTrains(lineObject).then(function(){
@@ -28,10 +27,12 @@ intervalID = setInterval(function(){
 }, 10000);
 
 io.on('connection', function(socket){
-  io.emit("line", lineObject);
-  io.emit('incidents', incidents);
+  socket.on('getTrains', function(){
+    console.log("Sending current trains.")
+    io.emit("line", lineObject);
+    io.emit('incidents', incidents);
+  })
 });
-
 
 server.listen(app.get('port'), function(){
   console.log("App listening on port", app.get('port'));
