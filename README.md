@@ -51,11 +51,11 @@ I spent a lot of time thinking about how to determine where trains are on a line
 
 *  ~~Add websocket connections between front and back end.~~
 *  ~~Get rid of flickering on updates.~~
-*  Persist a trains array for each rail and push/pop trains based on the data updates.
+*  Add trainsIn/trainsOut to each line.  Keep a previous/new copy on the front end, and compare the two in order to draw trains.
 *  General code cleanup, remove redundant/useless code/variables (there are a lot).
 *  Add mouseover on trains to show their ETA and destination (redundant but cool).
 *  Look into fringe cases with bad data from wmata.  Have to think about whether or not it's worth the effort to try and correct some of their obviously incorrect data.
-*  Look into rendering multiple trains between two given stations.
+*  Change the size/shape of train elements to make things more compact.
 
 
 See `user.stories.md` for more information about development.
