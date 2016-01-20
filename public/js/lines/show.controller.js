@@ -2,74 +2,73 @@
   angular
   .module("lines")
   .controller("LineShowController", [
-    "LineFactory",
-    "DelayFactory",
     "$stateParams",
     "$state",
     "$scope",
     "$interval",
+    "mySocket",
     ShowFunction
   ]);
 
-  function ShowFunction(LineFactory, DelayFactory, $stateParams, $state, $scope, $interval){
-
+  function ShowFunction($stateParams, $state, $scope, $interval, mySocket){
+    mySocket.emit("getLines");
     helper.addHash();
     var self=this;
     this.delays = [];
+
     this.initArrays = function() {
       self.timesIn = [];
       self.timesOut = [];
       self.stations = [];
     }
+
     this.initArrays()
     this.line = helper.staticLines[$stateParams.ln];
-
     this.trackInfo = {
       totalDistance: this.line.totalDist,
       miles: (this.line.totalDist/5280).toFixed(2),
       numStations: this.line.numStations
     }
 
-    this.getDelays = function() {
-      DelayFactory.query({}, function(res){
-        for (var j=0; j<res.length; j++){
-          for (var k=0; k<res[j].lines.length; k++){
-            if ($stateParams.ln == res[j].lines[k]){
-              self.delays.push(res[j]);
-            }
+    this.getDelays = function(res) {
+      self.delays = [];
+      for (var j=0; j<res.length; j++){
+        for (var k=0; k<res[j].lines.length; k++){
+          if ($stateParams.ln == res[j].lines[k]){
+            self.delays.push(res[j]);
           }
         }
-      });
+      }
     }
 
 
-    self.getDelays();
-    this.getData = function() {
+    this.getData = function(res) {
       self.initArrays();
-      LineFactory.get({ln: $stateParams.ln}, function(res){
-        self.line.stations = res.stations;
-        for (var i=0; i<self.line.stations.length; i++){
-          self.stations.push(res.stations[i].name);
-          if (res.stations[i].trainsIn[0]){
-            self.timesIn.push(res.stations[i].trainsIn[0].status)
-          } else {
-            self.timesIn.push("N/A");
-          }
-          if (res.stations[i].trainsOut[0]){
-            self.timesOut.push(res.stations[i].trainsOut[0].status || null)
-          }else{
-            self.timesOut.push("N/A");
-          }
+      self.line.stations = res[$stateParams.ln].stations;
+      for (var i=0; i<self.line.stations.length; i++){
+        self.stations.push(res[$stateParams.ln].stations[i].name);
+        if (res[$stateParams.ln].stations[i].trainsIn[0]){
+          self.timesIn.push(res[$stateParams.ln].stations[i].trainsIn[0].status)
+        } else {
+          self.timesIn.push("N/A");
         }
-      });
+        if (res[$stateParams.ln].stations[i].trainsOut[0]){
+          self.timesOut.push(res[$stateParams.ln].stations[i].trainsOut[0].status)
+        }else{
+          self.timesOut.push("N/A");
+        }
+      }
     }
 
-    this.getData()
-    this.intervalID = $interval(this.getData, 10000);
+    $scope.$on('socket:incidents', function(ev, data){
+      self.getDelays(data);
+    });
+    $scope.$on('socket:line', function (ev, data) {
+      self.getData(data);
+    });
 
     $scope.$on('$destroy', function () {
-      $interval.cancel(self.intervalID);
-     });
+    });
 
     this.show = false;
     this.counter = 0;

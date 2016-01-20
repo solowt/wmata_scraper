@@ -8,7 +8,8 @@ var env = fs.existsSync("./env.js") ? require("../env") : process.env;
 
 // take all lines as an array, update every station's (nested on line)
 // trains array.  do an api call for All trains. lineObj = {code=>Line}
-// this has a bug, not currently in use.
+// this has a bug, RE WRITE THIS TO WORK.  iterate through all lines and
+// search for station match.  will take longer but do it all in one call
 var getAllTrains = function(lineObj) {
   lineObj = clearTrains(lineObj);
   var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/All?api_key="+env.KEY;
@@ -21,20 +22,21 @@ var getAllTrains = function(lineObj) {
             var locationCode = resJSON.Trains[i].LocationCode;
             var lineCode = resJSON.Trains[i].Line;
             var newTrain = new Train(constructTrainData(resJSON.Trains[i]));
-            for (var j=0; j<lineObj[lineCode].stations.length; j++){
-              if (lineObj[lineCode].stations[j].code == locationCode){
-                if (newTrain.direction == "2"){
-                  lineObj[lineCode].stations[j].trainsOut.push(newTrain);
-                } else if (newTrain.direction == "1"){
-                  lineObj[lineCode].stations[j].trainsIn.push(newTrain);
-                } else{
-                  console.log("else")
+            for (var line in lineObj){
+              for (var j=0; j<lineObj[line].stations.length; j++){
+                if (lineObj[line].stations[j].code == locationCode){
+                  if (newTrain.direction == "2"){
+                    lineObj[line].stations[j].trainsOut.push(newTrain);
+                  } else if (newTrain.direction == "1"){
+                    lineObj[line].stations[j].trainsIn.push(newTrain);
+                  } else{
+                    console.log("Train didn't match.")
+                  }
                 }
               }
             }
           }
         }
-        getTrainNumWrapper(lineObj);
         resolve(lineObj);
       }
     });
