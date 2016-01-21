@@ -18,7 +18,9 @@ var incidents = [];
 var callCounter = 0;
 var trainsLoop = function(){
   if (callCounter == 100){
-    global.gc()
+    callCounter = 0;
+    lineObject = require('./structer.js');
+    return;
   }
   var counter = 0;
   return new Promise(function(resolve, reject){
@@ -38,7 +40,6 @@ var trainsLoop = function(){
   }).then(function(){ setTimeout(trainsLoop, 10000); });
 }
 
-trainsLoop();
 //
 // intervalID = setInterval(function(){
 //   functionLib.getAllTrains(lineObject).then(function(){
@@ -52,6 +53,9 @@ trainsLoop();
 
 io.on('connection', function(socket){
   socket.on('getTrains', function(){
+    if (callCounter == 0){
+      trainsLoop();
+    }
     console.log("Sending current trains.")
     io.emit("line", lineObject);
     io.emit('incidents', incidents);
