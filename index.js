@@ -17,6 +17,9 @@ var lineObject = require('./structer.js')
 var incidents = [];
 var callCounter = 0;
 var trainsLoop = function(){
+  if (callCounter == 100){
+    global.gc()
+  }
   var counter = 0;
   return new Promise(function(resolve, reject){
     functionLib.getAllTrains(lineObject).then(function(){
