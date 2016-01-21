@@ -19,6 +19,7 @@ var callCounter = 0;
 var trainsLoop = function(){
   if (callCounter == 100){
     callCounter = 0;
+    global.gc();
     lineObject = require('./structer.js');
     return;
   }
