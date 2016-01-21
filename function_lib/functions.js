@@ -11,33 +11,37 @@ var env = fs.existsSync("./env.js") ? require("../env") : process.env;
 // this has a bug, RE WRITE THIS TO WORK.  iterate through all lines and
 // search for station match.  will take longer but do it all in one call
 var getAllTrains = function(lineObj) {
-  lineObj = clearTrains(lineObj);
+  clearTrains(lineObj);
   var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/All?api_key="+env.KEY;
   return new Promise(function(resolve, reject){
     request(url, function(err, res){
-      resJSON = JSON.parse(res.body);
-      if (resJSON.Trains) {
-        for (var i=0;i < resJSON.Trains.length; i++){
-          if (validTrain(resJSON.Trains[i])) {
-            var locationCode = resJSON.Trains[i].LocationCode;
-            var lineCode = resJSON.Trains[i].Line;
-            var newTrain = new Train(constructTrainData(resJSON.Trains[i]));
-            for (var line in lineObj){
-              for (var j=0; j<lineObj[line].stations.length; j++){
-                if (lineObj[line].stations[j].code == locationCode){
-                  if (newTrain.direction == "2"){
-                    lineObj[line].stations[j].trainsOut.push(newTrain);
-                  } else if (newTrain.direction == "1"){
-                    lineObj[line].stations[j].trainsIn.push(newTrain);
-                  } else{
-                    console.log("Train didn't match.")
+      if (!err){
+        resJSON = JSON.parse(res.body);
+        if (resJSON.Trains) {
+          for (var i=0;i < resJSON.Trains.length; i++){
+            if (validTrain(resJSON.Trains[i])) {
+              var locationCode = resJSON.Trains[i].LocationCode;
+              var lineCode = resJSON.Trains[i].Line;
+              var newTrain = new Train(constructTrainData(resJSON.Trains[i]));
+              for (var line in lineObj){
+                for (var j=0; j<lineObj[line].stations.length; j++){
+                  if (lineObj[line].stations[j].code == locationCode){
+                    if (newTrain.direction == "2"){
+                      lineObj[line].stations[j].trainsOut.push(newTrain);
+                    } else if (newTrain.direction == "1"){
+                      lineObj[line].stations[j].trainsIn.push(newTrain);
+                    } else{
+                      console.log("Train didn't match.")
+                    }
                   }
                 }
               }
             }
           }
+          resolve(lineObj);
         }
-        resolve(lineObj);
+      } else{
+        console.log(err);
       }
     });
   });
