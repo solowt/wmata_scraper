@@ -91,8 +91,8 @@ var LineSchema = new Schema({
   totalTime: Number,
   totalDist: Number,
   numStations: Number,
-  trainsIn: [TrainSchema],
-  trainsOut: [TrainSchema]
+  trainsIn: [],
+  trainsOut: []
 
 });
 

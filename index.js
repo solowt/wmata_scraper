@@ -26,7 +26,19 @@ var trainsLoop = function(){
   var counter = 0;
   return new Promise(function(resolve, reject){
     functionLib.getAllTrains(lineObject).then(function(){
+      functionLib.filterTrains(lineObject);
       console.log(++callCounter + ": Got all trains.");
+      for (var k in lineObject){
+        var ina = 0;
+        var out = 0;
+        for (var b=0; b<lineObject[k].trainsIn.length; b++){
+          ina+=lineObject[k].trainsIn[b].length;
+        }
+        for (var c=0; c<lineObject[k].trainsOut.length; c++){
+          out+=lineObject[k].trainsOut[c].length;
+        }
+        console.log(k+" in: "+ina+"| out: "+out);
+      }
       io.emit('line', lineObject);
       if (++counter==2){
         resolve();
@@ -40,17 +52,6 @@ var trainsLoop = function(){
     });
   }).then(function(){ setTimeout(trainsLoop, 10000); });
 }
-
-//
-// intervalID = setInterval(function(){
-//   functionLib.getAllTrains(lineObject).then(function(){
-//     console.log("Got all trains.")
-//     io.emit('line', lineObject);
-//   })
-//   functionLib.getIncidents().then(function(incidents){
-//     io.emit('incidents', incidents);
-//   })
-// }, 10000);
 
 io.on('connection', function(socket){
   socket.on('getTrains', function(){

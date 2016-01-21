@@ -174,9 +174,31 @@ var getDistances = function(linesObj) {
   });
 };
 
-var killGhostsWrapper = function(linesObj){
-  for (var key in linesObj){
-    linesObj[key].killGhosts();
+var filterTrains = function(linesObj){
+  var counter = 0;
+  for (var line in linesObj){
+    var numStations = linesObj[line].stations.length;
+    linesObj[line].trainsOut = Array.apply(null, Array(numStations)).map(function(){return [];});
+    linesObj[line].trainsIn = Array.apply(null, Array(numStations)).map(function(){return [];});
+    for (var i=0; i < numStations; i++){
+      for (var j=0; j < linesObj[line].stations[i].trainsIn.length; j++){
+        if (linesObj[line].stations[i].trainsIn[j].status == "BRD" || linesObj[line].stations[i].trainsIn[j].status == "ARR"){
+          linesObj[line].trainsIn[i].push(linesObj[line].stations[i].trainsIn[j]);
+        }else if (parseInt(linesObj[line].stations[i].trainsIn[j].status) <= 3 || parseInt(linesObj[line].stations[i].trainsIn[j].status) <= linesObj[line].stations[i].timePrev){
+          // linesObj[line].trainsIn[i].push(linesObj[line].stations[i].trainsIn[j]);
+        }
+      }
+      for (var k=0; k < linesObj[line].stations[i].trainsOut.length; k++){
+        if (linesObj[line].stations[i].trainsOut[k].status == "BRD" || linesObj[line].stations[i].trainsOut[k].status == "ARR"){
+          linesObj[line].trainsOut[i].push(linesObj[line].stations[i].trainsOut[k]);
+        }else if (parseInt(linesObj[line].stations[i].trainsOut[k].status) <= 3 || parseInt(linesObj[line].stations[i].trainsOut[k].status) <= linesObj[line].stations[i].timeNext){
+          // linesObj[line].trainsOut[i].push(linesObj[line].stations[i].trainsOut[k]);
+      } else{
+        // console.log(++counter);
+
+        }
+      }
+    }
   }
   return linesObj;
 }
@@ -212,9 +234,9 @@ module.exports = {
   makeLineObj: makeLineObj,
   clearTrains: clearTrains,
   getDistances: getDistances,
-  killGhostsWrapper: killGhostsWrapper,
   getNumber: getNumber,
   findStations: findStations,
   getTrainsWrapper: getTrainsWrapper,
-  getIncidents: getIncidents
+  getIncidents: getIncidents,
+  filterTrains: filterTrains
 };
