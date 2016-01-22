@@ -174,8 +174,17 @@ var getDistances = function(linesObj) {
   });
 };
 
+// simple function to empty trains attached to each line
+var emptyTrains = function(lineObject){
+  for (var k in lineObject){
+    lineObject[k].trainsIn = [];
+    lineObject[k].trainsOut = [];
+  }
+}
+
+// go through all the trains on each station.  push trains that I suspect to be real, or just push the closest train
 var filterTrains = function(linesObj){
-  var counter = 0;
+  emptyTrains(linesObj);
   for (var line in linesObj){
     var numStations = linesObj[line].stations.length;
     linesObj[line].trainsOut = Array.apply(null, Array(numStations)).map(function(){return [];});
@@ -184,18 +193,19 @@ var filterTrains = function(linesObj){
       for (var j=0; j < linesObj[line].stations[i].trainsIn.length; j++){
         if (linesObj[line].stations[i].trainsIn[j].status == "BRD" || linesObj[line].stations[i].trainsIn[j].status == "ARR"){
           linesObj[line].trainsIn[i].push(linesObj[line].stations[i].trainsIn[j]);
-        }else if (parseInt(linesObj[line].stations[i].trainsIn[j].status) <= 3 || parseInt(linesObj[line].stations[i].trainsIn[j].status) <= linesObj[line].stations[i].timePrev){
-          // linesObj[line].trainsIn[i].push(linesObj[line].stations[i].trainsIn[j]);
+        }else if (parseInt(linesObj[line].stations[i].trainsIn[j].status) <= 2 || parseInt(linesObj[line].stations[i].trainsIn[j].status) <= linesObj[line].stations[i].timePrev){
+          linesObj[line].trainsIn[i].push(linesObj[line].stations[i].trainsIn[j]);
+        } else if (j==0){
+          linesObj[line].trainsIn[i].push(linesObj[line].stations[i].trainsIn[j]);
         }
       }
       for (var k=0; k < linesObj[line].stations[i].trainsOut.length; k++){
         if (linesObj[line].stations[i].trainsOut[k].status == "BRD" || linesObj[line].stations[i].trainsOut[k].status == "ARR"){
           linesObj[line].trainsOut[i].push(linesObj[line].stations[i].trainsOut[k]);
-        }else if (parseInt(linesObj[line].stations[i].trainsOut[k].status) <= 3 || parseInt(linesObj[line].stations[i].trainsOut[k].status) <= linesObj[line].stations[i].timeNext){
-          // linesObj[line].trainsOut[i].push(linesObj[line].stations[i].trainsOut[k]);
-      } else{
-        // console.log(++counter);
-
+        }else if (parseInt(linesObj[line].stations[i].trainsOut[k].status) <= 2 || parseInt(linesObj[line].stations[i].trainsOut[k].status) <= linesObj[line].stations[i].timeNext){
+          linesObj[line].trainsOut[i].push(linesObj[line].stations[i].trainsOut[k]);
+      } else if(k==0){
+          linesObj[line].trainsOut[i].push(linesObj[line].stations[i].trainsOut[k]);
         }
       }
     }

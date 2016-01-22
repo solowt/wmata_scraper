@@ -39,6 +39,7 @@ var trainsLoop = function(){
         }
         console.log(k+" in: "+ina+"| out: "+out);
       }
+      console.log(lineObject);
       io.emit('line', lineObject);
       if (++counter==2){
         resolve();
