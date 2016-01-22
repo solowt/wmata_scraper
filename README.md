@@ -51,7 +51,7 @@ I spent a lot of time thinking about how to determine where trains are on a line
 *  Prediction times are only provided in whole minutes.  No seconds or fractional minutes.
 *  Wmata's rail-time predictions between stations are very poor.  All of their predictions tend to be high, by at least a minute.
 
-The way I ended up solving this problem was by looking at the closest train to each station on a line.  If the closest train is arriving or boarding, I can confidently place a train.  Otherwise, I looked for patterns in the minutes-ETA.  For example, if there are three consecutive stations ETAs of 2 minutes, 5 minutes, and 2 minutes, then I can guess that there is a train after the first two stations and before the last one, just based on the progression of ETAs.
+The way I ended up solving this problem was by looking at the closest train to each station on a line.  If the closest train is arriving or boarding, I can confidently place a train.  Otherwise, I looked for patterns in the minutes-ETA.  For example, if there are three consecutive stations with ETAs of 2 minutes, 5 minutes, and 2 minutes, then I can guess that there is a train after the first two stations and before the last one, just based on the progression of ETAs.
 
 
 ##To-do List:
