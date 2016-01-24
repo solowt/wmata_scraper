@@ -13,7 +13,8 @@ app.set('port', (process.env.PORT || 3000));
 
 app.use(express.static(__dirname + '/public'));
 
-var lineObject = require('./structer.js')
+// var lineObject = require('./structer.js')
+var lineObject = require('./linesObject.js');
 var incidents = [];
 var callCounter = 0;
 var trainsLoop = function(){

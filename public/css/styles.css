@@ -237,6 +237,7 @@ img {
   width:100%;
   background-color: white;
   height: 65px;
+  word-wrap: break-word;
 }
 
 .trackz{
