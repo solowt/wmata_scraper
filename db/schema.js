@@ -1,13 +1,14 @@
 var mongoose = require('mongoose');
 var fs = require("fs");
+// api keys set here depending on what is set
 var env = fs.existsSync("./env.js") ? require("../env") : process.env;
 var request = require('request');
 
-
-// mongoose.connect('mongodb://localhost/wmata-scraper');
-
 var Schema = mongoose.Schema;
 
+// this model is used only for the purpose of generating static data
+// in the seeds.js file.  it holds some basic information about the DC
+// metro and its lines and stations.  this data is hardcoded in seeds.js
 var MetroSchema = new Schema({
   lines: [String],
   firstStations: Object,
@@ -16,47 +17,39 @@ var MetroSchema = new Schema({
 
 mongoose.model('Metro', MetroSchema);
 
+// this schema will represent each train.  will be stored on arrays on each station
+// as well as arrays on each line
 var TrainSchema = new Schema({
-  createdAt: Date,
-  status: String,
-  dest: String,
-  destCode: String,
-  location: String,
-  locationCode: String,
-  numCars: Number,
-  line: String,
-  position: Number, //this is the position on a line, use to kill ghosts
-  direction: String //2 possible directions, inbound and outbound
+  createdAt: Date, // not currently used
+  status: String, // minutes ETA or ARR or BRD
+  dest: String, // final destination
+  destCode: String, // code of destination e.g. "A01"
+  location: String, // station the train is arriving at
+  locationCode: String, // code of the station the train is arriving at
+  numCars: Number, // number of cars on the train, we do set this but don't currently use it
+  line: String, // line this train belongs to
+  position: Number, // not used, currently, may store this train's "sequence" in a line
+  direction: String // the rail this train is on, can be 1 or 2. corresponds to "group" field returned by wmata
 });
 
-// function to get the position of a train on a line
-TrainSchema.methods.getPos = function() {
-
-
-};
-
-// use this to get direction of a train based on its position
-// and destination.  maybe don't need this
-TrainSchema.methods.getDirection = function() {
-
-};
 mongoose.model('Train', TrainSchema);
 
+// this schema represents stations.  each line will have an array of stations, in order
 var StationSchema = new Schema({
-  averageWait: Object, // average distance between all incoming trains
-  name: String,
-  code: String,
-  line: String,
-  sequence: Number,
-  distPrev: Number,
-  timePrev: Number,
-  timeNext: Number,
-  trainsIn: [TrainSchema],
-  trainsOut: [TrainSchema]
+  averageWait: Object, // average distance between all incoming trains, not currently used
+  name: String, // name of station
+  code: String, // code of station
+  line: String, // line of station
+  sequence: Number, // sequence on the line, starts at 1
+  distPrev: Number, // distance to previous station (in feet)
+  timePrev: Number, // time to previous station (in minutes)
+  timeNext: Number, // time to next station (minutes)
+  trainsIn: [TrainSchema], // array of trains moving in one direction
+  trainsOut: [TrainSchema] // array of trains moving in the other direction
 });
 
 // get the inbound trains on one station only
-// probably delete this
+// not currently used
 StationSchema.methods.getTrains = function() {
   var self = this;
   var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/"+this.code+"?api_key="+env.KEY;
@@ -82,21 +75,24 @@ StationSchema.methods.getTrains = function() {
     })
   })
 }
+
 mongoose.model('Station', StationSchema);
 
+// schema for lines, a line will hold trains that we esimate are on that line
+// as well as various information about that line + an array of ordered stations
 var LineSchema = new Schema({
-  name: String,
-  numTrains: Number,
-  stations: [StationSchema],
-  totalTime: Number,
-  totalDist: Number,
-  numStations: Number,
-  trainsIn: [],
-  trainsOut: []
+  name: String, // name
+  numTrains: Number, // number of trains on that line, not used currently
+  stations: [StationSchema], // station lsit in order
+  totalTime: Number, // total minutes travel time
+  totalDist: Number, // total feet
+  numStations: Number, // number of stations
+  trainsIn: [], // trains going in one direction, this will be an array of arrays, which will hold trains
+  trainsOut: [] // same as above, opposte direction
 
 });
 
-// gets total number of trains on a line
+// gets total number of trains on a line.  simple for loop
 LineSchema.methods.getTrainNum = function() {
   var trains = 0;
   for (var i=0; i<this.stations.length; i++){
@@ -107,7 +103,7 @@ LineSchema.methods.getTrainNum = function() {
   this.numTrains = trains;
 }
 
-// run in seeds to get stations+some data
+// used to get static data: stations on each line in order
 LineSchema.methods.getStations = function(metro) {
   var self = this;
   return new Promise(function(resolve, reject){
@@ -137,9 +133,7 @@ LineSchema.methods.getStations = function(metro) {
 };
 
 // function to get the average wait time for each station on a
-// line.  need to get a separate avg for each direction, save as
-// object with 2 keys. simply avg of every inbound train in min.
-// don't need api call for this method...do this after getAllTrains
+// line.  not currently used/functional
 LineSchema.methods.getAvgWait = function() {
   for (var i=0;i<this.stations.length;i++){
     var diffsIn = [];
@@ -169,9 +163,9 @@ LineSchema.methods.getAvgWait = function() {
     }
 };
 
-// function to eliminate "ghost trains," ie train duplicates
-// add if checking for direction, decide to use timeprev or
-// timenext
+// function to elminate duplicate trains ona  line
+// this version is not used, instead we use filterTrains in
+// function library
 LineSchema.methods.killGhosts = function() {
   for (var i=0; i<this.stations.length;i++){
     for (var j=0; j<this.stations[i].trains.length; j++) {
@@ -183,6 +177,7 @@ LineSchema.methods.killGhosts = function() {
   }
 };
 
+// clear all trains on a given line, used in between updates
 LineSchema.methods.clearTrains = function() {
   for (var i=0; i<this.stations.length; i++){
     this.stations[i].trainsIn = [];
@@ -190,7 +185,9 @@ LineSchema.methods.clearTrains = function() {
   }
 }
 
-// get all trains on one line
+// get all trains on one line, not currently used, but functional
+// the issue here is that we'd rather get all the train data will one
+// api call
 LineSchema.methods.getTrains = function(){
   this.clearTrains();
   var self = this;
@@ -228,6 +225,7 @@ LineSchema.methods.getTrains = function(){
 }
 mongoose.model('Line', LineSchema);
 
+// requires model so they can be used in the above schcema methods
 var Train = require('../models/train.js');
 var Station = require('../models/station.js');
 var Line = require('../models/line.js');

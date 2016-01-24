@@ -135,6 +135,8 @@ img {
 }
 
 .trackborder {
+  opacity: .2;
+  background-color: grey;
   height: 76px;
   width: 1828px;
   border: 2px solid black;

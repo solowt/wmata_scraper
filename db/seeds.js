@@ -1,3 +1,6 @@
+// note: this file was used to generate static data and for testing functions
+// it's not up to date and shouldn't be run
+
 var mongoose = require('mongoose');
 var Line = require('../models/line.js');
 var Station = require('../models/station.js');
@@ -6,12 +9,16 @@ var Metro = require('../models/metro.js');
 var functionLib = require('../function_lib/functions.js');
 var util = require('util');
 
+// we're not currently connected to a DB. but we were at one point, and the
+// seeds scripts below do use .save()
 // var conn = mongoose.connect('mongodb://localhost/wmata-scraper')
 
+// clear the DB
 Line.remove({}, function(err){
   Metro.remove({}, function(err){
-  console.log("Error: "+err);
+  console.log("Error: "+err); // log errors
     console.log("Error: "+err);
+    // enter static data
     var lines = ['RD', 'YL', 'GR', 'BL', 'OR', 'SV'];
     var firstStations = {
       RD: {name: 'Glenmont', code: 'B11'},
@@ -36,22 +43,23 @@ Line.remove({}, function(err){
                     };
     var wMetro = new Metro(metroData);
 
+    // save static metro data, then
     wMetro.save().then(function(metro, err){
       var lineObj = {};
-      for (var i=0; i<metro.lines.length; i++){
+      for (var i=0; i<metro.lines.length; i++){ // get the stations on each line
         new Line({name: metro.lines[i]}).getStations(metro).then(function(line){
-          var code = line.name;
+          var code = line.name; // code name for the line e.g. "RD," "YL," etc
           lineObj[code] = line;
           return new Promise(function(resolve, reject){
-            if (Object.keys(lineObj).length == 6){
+            if (Object.keys(lineObj).length == 6){ // if we have all stations for all six lines, then resolve promise
               console.log("Got station list.")
               resolve(lineObj);
             }
           });
         }).then(function(linesObj){
           functionLib.getDistances(linesObj).then(function(lo){
-            functionLib.getAllTrains(lo).then(function(loi){
-              console.log(loi);
+            functionLib.getAllTrains(lo).then(function(loi){ // get all trains on each line
+              console.log(loi); // log the result
             })
           })
         })

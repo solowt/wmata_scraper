@@ -1,3 +1,5 @@
+// station model exported from here
+
 require('../db/schema');
 var mongoose = require('mongoose');
 

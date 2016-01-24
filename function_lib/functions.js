@@ -6,10 +6,12 @@ var Line = require('../models/line.js');
 var fs = require("fs");
 var env = fs.existsSync("./env.js") ? require("../env") : process.env;
 
-// take all lines as an array, update every station's (nested on line)
-// trains array.  do an api call for All trains. lineObj = {code=>Line}
-// this has a bug, RE WRITE THIS TO WORK.  iterate through all lines and
-// search for station match.  will take longer but do it all in one call
+
+// this is currently how we get all the trains for each line.  takes a 'line object'
+// i.e. keys are line codes and values are lines (defined by schema file).  this uses the wmata
+// api to get a list of all trains.  this list (~400 trains) is parsed through and
+// each train is pushed onto the station to which is arriving.  the same train may exist on
+// multiple stations when two different lines share a rail.
 var getAllTrains = function(lineObj) {
   clearTrains(lineObj);
   var url = "https://api.wmata.com/StationPrediction.svc/json/GetPrediction/All?api_key="+env.KEY;
@@ -47,6 +49,8 @@ var getAllTrains = function(lineObj) {
   });
 }
 
+// not currently used, simply a wrapper around a schema method to get
+// all trains on a line
 var getTrainsWrapper = function (linesObj){
   var counter = 0;
   var numKeys = Object.keys(linesObj).length;
@@ -62,6 +66,7 @@ var getTrainsWrapper = function (linesObj){
   });
 }
 
+// a wrapper to get the number of trains on each line
 var getTrainNumWrapper = function(lineObj) {
   for (var key in lineObj){
     lineObj[key].getTrainNum();
@@ -92,7 +97,8 @@ var validTrain = function(train) {
 }
 
 // finds and returns a given station based on a code, used to search
-// an array and return one element (a station) within that array
+// an array and return one element (a station) within that array.  this is
+// used with the array.find(callback) js function
 var findStations = function(element, index, array){
   if (element.code == this.loc){
     return true;
@@ -119,7 +125,7 @@ var constructTrainData = function(data){
   return trainData;
 }
 
-// currently hard coded - this not in use.  will have to make object later.
+// not used. function to construct an object from a list of lines
 var makeLineObj = function(line){
   var code = line.name;
   console.log(this.lineObj)
@@ -134,7 +140,7 @@ var makeLineObj = function(line){
 }
 
 // takes an input of a string and parses it as an int. unless it is equal
-// to "BRD" or "ARR" and then returns 0
+// to "BRD" or "ARR" and then returns 0. not currently used
 var getNumber = function(str){
   if (str=="BRD" || str=="ARR"){
     return 0;
@@ -145,6 +151,7 @@ var getNumber = function(str){
 
 // function to get the distance between a station and previous in minutes
 // loops through a station array and adds this information to the station
+// used to generate static data only
 var getDistances = function(linesObj) {
   var KEY = env.KEY;
   return new Promise(function(resolve, reject){
@@ -183,6 +190,7 @@ var emptyTrains = function(lineObject){
 }
 
 // go through all the trains on each station.  push trains that I suspect to be real, or just push the closest train
+// this data will be sent with the line object ot the front-end
 var filterTrains = function(linesObj){
   emptyTrains(linesObj);
   for (var line in linesObj){
@@ -213,6 +221,7 @@ var filterTrains = function(linesObj){
   return linesObj;
 }
 
+// gets incicents from wmata's api
 var getIncidents = function(){
   var url="https://api.wmata.com/Incidents.svc/json/Incidents?api_key="+env.KEY;
   return new Promise(function(resolve, reject){
@@ -237,6 +246,7 @@ var getIncidents = function(){
   });
 }
 
+// export functions
 module.exports = {
   getAllTrains: getAllTrains,
   validTrain: validTrain,
